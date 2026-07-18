@@ -26,11 +26,19 @@
 }
 
 .lessonTitle {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
   color: var(--color-text);
   border-left: 4px solid var(--color-gold);
   padding-left: 1rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .lessonTitle {
+    font-size: 1.1rem;
+  }
 }
 
 .contentLayout {
