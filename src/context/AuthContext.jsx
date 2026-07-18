@@ -9,21 +9,19 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session?.user) {
-        fetchAdminStatus(session.user.id);
+        fetchAdminStatus();
       } else {
         setLoading(false);
       }
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session?.user) {
-        fetchAdminStatus(session.user.id);
+        fetchAdminStatus();
       } else {
         setIsAdmin(false);
         setLoading(false);
@@ -33,15 +31,11 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchAdminStatus = async (userId) => {
-    const { data, error } = await supabase
-      .from('members')
-      .select('is_admin')
-      .eq('id', userId)
-      .single();
-    
-    if (!error && data) {
-      setIsAdmin(data.is_admin === true);
+  const fetchAdminStatus = async () => {
+    // Usa a funcao SECURITY DEFINER para evitar recursao RLS
+    const { data, error } = await supabase.rpc('is_admin');
+    if (!error && data === true) {
+      setIsAdmin(true);
     } else {
       setIsAdmin(false);
     }
