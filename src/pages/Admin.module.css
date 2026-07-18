@@ -1,0 +1,106 @@
+.adminContainer {
+  min-height: 100vh;
+  padding-bottom: 4rem;
+}
+
+.adminHeader {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+
+.adminHeader h1 {
+  color: var(--color-gold);
+}
+
+.adminHeader p {
+  color: var(--color-text-muted);
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tabBtn {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.tabBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text);
+}
+
+.activeTab {
+  background: var(--color-gold);
+  color: #000;
+}
+
+.activeTab:hover {
+  background: var(--color-gold-hover);
+  color: #000;
+}
+
+.panelContent {
+  padding: 2rem;
+}
+
+.formSection h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+}
+
+.form {
+  max-width: 600px;
+}
+
+.successMsg {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.errorMsg {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.listPreview {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.listPreview h3 {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.listPreview ul {
+  list-style: none;
+}
+
+.listPreview li {
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}

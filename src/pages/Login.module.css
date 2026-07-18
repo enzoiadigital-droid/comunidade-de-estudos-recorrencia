@@ -1,0 +1,76 @@
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.1), transparent 40%),
+                    radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.05), transparent 40%);
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo h1 {
+  color: var(--color-gold);
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.logo p {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.submitBtn {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.forgotPassword {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.forgotPassword button {
+  color: var(--color-text-muted);
+  text-decoration: underline;
+}
+
+.forgotPassword button:hover {
+  color: var(--color-gold);
+}
+
+.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.success {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
