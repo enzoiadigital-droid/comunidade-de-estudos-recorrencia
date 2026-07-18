@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import Header from '../components/Header';
+import { useSettings } from '../context/SettingsContext';
 import styles from './Admin.module.css';
 import {
   PlusCircle, Save, Pencil, Trash2, ChevronDown, ChevronUp,
-  X, Paperclip, ExternalLink, FolderOpen
+  X, Paperclip, ExternalLink, FolderOpen, SlidersHorizontal
 } from 'lucide-react';
 
 // ────────────────────────────────────────────────
@@ -420,6 +421,100 @@ function MaterialsPanel({ lessonId, showMsg }) {
 }
 
 // ────────────────────────────────────────────────
+// Seção de Configurações do Site
+// ────────────────────────────────────────────────
+function SettingsSection({ showMsg }) {
+  const { settings, refetchSettings } = useSettings();
+  const [form, setForm] = useState({
+    hero_title: '',
+    hero_subtitle: '',
+    hero_title_size_desktop: '',
+    hero_title_size_mobile: '',
+    header_brand_text: '',
+    header_brand_size_desktop: '',
+    header_brand_size_mobile: '',
+  });
+
+  // Sincroniza form quando settings carregam
+  useEffect(() => {
+    setForm({
+      hero_title: settings.hero_title ?? '',
+      hero_subtitle: settings.hero_subtitle ?? '',
+      hero_title_size_desktop: settings.hero_title_size_desktop ?? '3',
+      hero_title_size_mobile: settings.hero_title_size_mobile ?? '1.75',
+      header_brand_text: settings.header_brand_text ?? '',
+      header_brand_size_desktop: settings.header_brand_size_desktop ?? '1.25',
+      header_brand_size_mobile: settings.header_brand_size_mobile ?? '1',
+    });
+  }, [settings]);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const upserts = Object.entries(form).map(([key, value]) => ({ key, value: String(value) }));
+    const { error } = await supabase
+      .from('site_settings')
+      .upsert(upserts, { onConflict: 'key' });
+    if (error) { showMsg(error.message, 'error'); return; }
+    await refetchSettings();
+    showMsg('Configurações salvas com sucesso!');
+  };
+
+  const set = (key) => (e) => setForm(p => ({ ...p, [key]: e.target.value }));
+
+  return (
+    <form onSubmit={handleSave}>
+      {/* Hero */}
+      <div className={`glass-panel ${styles.formCard}`}>
+        <h2 className={styles.formTitle}><SlidersHorizontal size={18} /> Título Principal (Hero)</h2>
+        <div className={styles.gridForm}>
+          <div className="input-group" style={{ gridColumn: '1 / -1' }}>
+            <label>Texto do Título</label>
+            <input value={form.hero_title} onChange={set('hero_title')} placeholder="Bem-vinda à Comunidade" />
+          </div>
+          <div className="input-group" style={{ gridColumn: '1 / -1' }}>
+            <label>Subtítulo</label>
+            <input value={form.hero_subtitle} onChange={set('hero_subtitle')} placeholder="O seu caminho para a aprovação começa aqui." />
+          </div>
+          <div className="input-group">
+            <label>Tamanho da fonte — Desktop (rem)</label>
+            <input type="number" step="0.1" min="1" max="8" value={form.hero_title_size_desktop} onChange={set('hero_title_size_desktop')} />
+            <small style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>Padrão: 3rem → atual: {form.hero_title_size_desktop}rem</small>
+          </div>
+          <div className="input-group">
+            <label>Tamanho da fonte — Mobile (rem)</label>
+            <input type="number" step="0.1" min="0.8" max="4" value={form.hero_title_size_mobile} onChange={set('hero_title_size_mobile')} />
+            <small style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>Padrão: 1.75rem → atual: {form.hero_title_size_mobile}rem</small>
+          </div>
+        </div>
+      </div>
+
+      {/* Header Brand */}
+      <div className={`glass-panel ${styles.formCard}`}>
+        <h2 className={styles.formTitle}><SlidersHorizontal size={18} /> Nome no Header ("Rumo à Aprovação")</h2>
+        <div className={styles.gridForm}>
+          <div className="input-group" style={{ gridColumn: '1 / -1' }}>
+            <label>Texto do Header</label>
+            <input value={form.header_brand_text} onChange={set('header_brand_text')} placeholder="Rumo à Aprovação" />
+          </div>
+          <div className="input-group">
+            <label>Tamanho da fonte — Desktop (rem)</label>
+            <input type="number" step="0.05" min="0.5" max="3" value={form.header_brand_size_desktop} onChange={set('header_brand_size_desktop')} />
+            <small style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>Padrão: 1.25rem → atual: {form.header_brand_size_desktop}rem</small>
+          </div>
+          <div className="input-group">
+            <label>Tamanho da fonte — Mobile (rem)</label>
+            <input type="number" step="0.05" min="0.5" max="3" value={form.header_brand_size_mobile} onChange={set('header_brand_size_mobile')} />
+            <small style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>Padrão: 1rem → atual: {form.header_brand_size_mobile}rem</small>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" className="btn-primary"><Save size={16} /> Salvar Configurações</button>
+    </form>
+  );
+}
+
+// ────────────────────────────────────────────────
 // Admin Principal
 // ────────────────────────────────────────────────
 export default function Admin() {
@@ -454,10 +549,14 @@ export default function Admin() {
           <button className={`${styles.tabBtn} ${activeTab === 'categories' ? styles.activeTab : ''}`} onClick={() => setActiveTab('categories')}>
             Categorias
           </button>
+          <button className={`${styles.tabBtn} ${activeTab === 'settings' ? styles.activeTab : ''}`} onClick={() => setActiveTab('settings')}>
+            ⚙️ Configurações
+          </button>
         </div>
 
         {activeTab === 'categories' && <CategoriesSection showMsg={showMsg} />}
         {activeTab === 'lessons' && <LessonsSection showMsg={showMsg} />}
+        {activeTab === 'settings' && <SettingsSection showMsg={showMsg} />}
       </main>
     </div>
   );

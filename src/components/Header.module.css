@@ -16,9 +16,15 @@
   align-items: center;
 }
 
-.logo h2 {
+.logo h2, .brandName {
   color: var(--color-gold);
-  font-size: 1.25rem;
+  font-size: var(--brand-size-desktop, 1.25rem);
+}
+
+@media (max-width: 640px) {
+  .logo h2, .brandName {
+    font-size: var(--brand-size-mobile, 1rem);
+  }
 }
 
 .nav {

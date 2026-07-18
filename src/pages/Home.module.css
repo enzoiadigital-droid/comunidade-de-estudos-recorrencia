@@ -35,8 +35,8 @@
   margin-bottom: 1rem;
 }
 
-.heroContent h1 {
-  font-size: 3rem;
+.heroContent h1, .heroTitle {
+  font-size: var(--hero-size-desktop, 3rem);
   font-weight: 700;
   margin-bottom: 0.75rem;
   background: linear-gradient(135deg, #fff 40%, var(--color-gold) 100%);
@@ -51,8 +51,8 @@
 }
 
 @media (max-width: 640px) {
-  .heroContent h1 {
-    font-size: 1.75rem;
+  .heroContent h1, .heroTitle {
+    font-size: var(--hero-size-mobile, 1.75rem);
   }
   .heroContent p {
     font-size: 0.95rem;

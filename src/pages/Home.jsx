@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Header from '../components/Header';
+import { useSettings } from '../context/SettingsContext';
 import styles from './Home.module.css';
 import { Play } from 'lucide-react';
 
@@ -10,6 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const navigate = useNavigate();
+  const { settings } = useSettings();
 
   useEffect(() => {
     fetchContent();
@@ -68,8 +70,16 @@ export default function Home() {
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={`container ${styles.heroContent}`}>
-          <h1>Bem-vinda à Comunidade</h1>
-          <p>O seu caminho para a aprovação começa aqui.</p>
+          <h1
+            style={{
+              '--hero-size-desktop': `${settings.hero_title_size_desktop}rem`,
+              '--hero-size-mobile': `${settings.hero_title_size_mobile}rem`,
+            }}
+            className={styles.heroTitle}
+          >
+            {settings.hero_title}
+          </h1>
+          <p>{settings.hero_subtitle}</p>
         </div>
       </section>
 
