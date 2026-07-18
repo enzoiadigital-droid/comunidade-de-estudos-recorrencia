@@ -79,7 +79,7 @@
 
 .carouselWrapper {
   overflow-x: auto;
-  padding: 0.5rem 2rem 1.5rem 2rem;
+  padding: 0.5rem max(2rem, calc((100vw - var(--max-width)) / 2 + 2rem)) 2rem max(2rem, calc((100vw - var(--max-width)) / 2 + 2rem));
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
