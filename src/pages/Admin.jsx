@@ -233,8 +233,39 @@ function LessonsSection({ showMsg }) {
             <input value={newLesson.title} onChange={e => setNewLesson(p => ({ ...p, title: e.target.value }))} required placeholder="Ex: Live 01 — Como começar a estudar" />
           </div>
           <div className="input-group" style={{ gridColumn: '1 / -1' }}>
-            <label>URL do Vídeo (MP4 ou link externo)</label>
-            <input type="url" value={newLesson.video_url} onChange={e => setNewLesson(p => ({ ...p, video_url: e.target.value }))} placeholder="https://..." />
+            <label>Vídeo</label>
+            <div className={styles.videoTypeToggle}>
+              <button
+                type="button"
+                className={`${styles.typeBtn} ${!newLesson.video_url.startsWith('<iframe') ? styles.typeBtnActive : ''}`}
+                onClick={() => setNewLesson(p => ({ ...p, video_url: '' }))}
+              >
+                🔗 URL Direta (MP4)
+              </button>
+              <button
+                type="button"
+                className={`${styles.typeBtn} ${newLesson.video_url.startsWith('<iframe') ? styles.typeBtnActive : ''}`}
+                onClick={() => setNewLesson(p => ({ ...p, video_url: '<iframe ' }))}
+              >
+                ▶ Embed (YouTube / Vimeo)
+              </button>
+            </div>
+            {newLesson.video_url.startsWith('<iframe') ? (
+              <textarea
+                rows="3"
+                value={newLesson.video_url === '<iframe ' ? '' : newLesson.video_url}
+                onChange={e => setNewLesson(p => ({ ...p, video_url: e.target.value }))}
+                placeholder='Cole aqui o código <iframe ...> do YouTube ou Vimeo'
+                style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
+              />
+            ) : (
+              <input
+                type="url"
+                value={newLesson.video_url}
+                onChange={e => setNewLesson(p => ({ ...p, video_url: e.target.value }))}
+                placeholder="https://exemplo.com/video.mp4"
+              />
+            )}
           </div>
           <div className="input-group" style={{ gridColumn: '1 / -1' }}>
             <label>URL da Imagem de Capa (Opcional)</label>
@@ -294,8 +325,41 @@ function LessonsSection({ showMsg }) {
                     <input value={editingLesson.title} onChange={e => setEditingLesson(p => ({ ...p, title: e.target.value }))} />
                   </div>
                   <div className="input-group" style={{ gridColumn: '1 / -1' }}>
-                    <label>URL do Vídeo</label>
-                    <input value={editingLesson.video_url || ''} onChange={e => setEditingLesson(p => ({ ...p, video_url: e.target.value }))} />
+                    <label>Vídeo</label>
+                    <div className={styles.videoTypeToggle}>
+                      <button
+                        type="button"
+                        className={`${styles.typeBtn} ${!(editingLesson.video_url || '').startsWith('<iframe') ? styles.typeBtnActive : ''}`}
+                        onClick={() => setEditingLesson(p => ({ ...p, video_url: '' }))}
+                      >
+                        🔗 URL Direta (MP4)
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.typeBtn} ${(editingLesson.video_url || '').startsWith('<iframe') ? styles.typeBtnActive : ''}`}
+                        onClick={() => {
+                          const v = editingLesson.video_url || '';
+                          if (!v.startsWith('<iframe')) setEditingLesson(p => ({ ...p, video_url: '' }));
+                        }}
+                      >
+                        ▶ Embed (YouTube / Vimeo)
+                      </button>
+                    </div>
+                    {(editingLesson.video_url || '').startsWith('<iframe') ? (
+                      <textarea
+                        rows="3"
+                        value={editingLesson.video_url || ''}
+                        onChange={e => setEditingLesson(p => ({ ...p, video_url: e.target.value }))}
+                        placeholder='Cole aqui o código <iframe ...> do YouTube ou Vimeo'
+                        style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
+                      />
+                    ) : (
+                      <input
+                        value={editingLesson.video_url || ''}
+                        onChange={e => setEditingLesson(p => ({ ...p, video_url: e.target.value }))}
+                        placeholder="https://exemplo.com/video.mp4"
+                      />
+                    )}
                   </div>
                   <div className="input-group" style={{ gridColumn: '1 / -1' }}>
                     <label>URL da Imagem de Capa</label>

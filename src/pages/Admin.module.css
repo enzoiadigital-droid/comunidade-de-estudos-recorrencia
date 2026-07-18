@@ -3,6 +3,37 @@
   background: var(--color-bg);
 }
 
+/* ── Toggle URL / Embed ── */
+.videoTypeToggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.typeBtn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: var(--transition);
+  font-family: var(--font-family);
+}
+
+.typeBtn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--color-text);
+}
+
+.typeBtnActive {
+  background: rgba(212,175,55,0.15) !important;
+  border-color: var(--color-gold) !important;
+  color: var(--color-gold) !important;
+}
+
 .adminHeader {
   margin-bottom: 2rem;
 }

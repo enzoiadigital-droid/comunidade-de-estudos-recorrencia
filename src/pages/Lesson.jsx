@@ -70,14 +70,36 @@ export default function Lesson() {
           <div className={styles.mainContent}>
             <div className={styles.videoWrapper}>
               {lesson.video_url ? (
-                <video 
-                  controls 
-                  className={styles.videoPlayer}
-                  poster={lesson.cover_image_url}
-                >
-                  <source src={lesson.video_url} type="video/mp4" />
-                  Seu navegador não suporta o elemento de vídeo.
-                </video>
+                (() => {
+                  const raw = lesson.video_url.trim();
+                  const isEmbed = raw.startsWith('<iframe');
+                  if (isEmbed) {
+                    // Extrai o src do iframe e adiciona atributos necessários
+                    const srcMatch = raw.match(/src="([^"]+)"/);
+                    const src = srcMatch ? srcMatch[1] : '';
+                    return (
+                      <iframe
+                        src={src}
+                        className={styles.videoPlayer}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                        title={lesson.title}
+                      />
+                    );
+                  }
+                  return (
+                    <video
+                      controls
+                      className={styles.videoPlayer}
+                      poster={lesson.cover_image_url}
+                    >
+                      <source src={raw} type="video/mp4" />
+                      Seu navegador não suporta o elemento de vídeo.
+                    </video>
+                  );
+                })()
               ) : (
                 <div className={styles.noVideo}>Nenhum vídeo disponível no momento.</div>
               )}
