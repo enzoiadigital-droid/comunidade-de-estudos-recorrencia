@@ -21,6 +21,26 @@
   font-size: 1.25rem;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.adminBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-gold);
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.adminBtn:hover {
+  color: var(--color-gold-hover);
+  transform: translateY(-1px);
+}
+
 .logoutBtn {
   display: flex;
   align-items: center;
