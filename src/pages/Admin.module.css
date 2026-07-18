@@ -1,106 +1,410 @@
 .adminContainer {
   min-height: 100vh;
-  padding-bottom: 4rem;
+  background: var(--color-bg);
 }
 
 .adminHeader {
   margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 1rem;
 }
 
 .adminHeader h1 {
+  font-size: 2rem;
   color: var(--color-gold);
+  margin-bottom: 0.25rem;
 }
 
 .adminHeader p {
   color: var(--color-text-muted);
+  font-size: 0.9rem;
 }
 
+/* ── Tabs ── */
 .tabs {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 2rem;
 }
 
 .tabBtn {
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 0.65rem 1.5rem;
+  background: rgba(255,255,255,0.05);
   color: var(--color-text-muted);
   border-radius: 8px;
   font-weight: 600;
+  font-size: 0.9rem;
   transition: var(--transition);
 }
 
-.tabBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--color-text);
+.tabBtn:hover { background: rgba(255,255,255,0.1); color: var(--color-text); }
+.activeTab { background: var(--color-gold) !important; color: #000 !important; }
+
+/* ── Form Cards ── */
+.formCard {
+  padding: 1.75rem;
+  margin-bottom: 2rem;
 }
 
-.activeTab {
-  background: var(--color-gold);
-  color: #000;
-}
-
-.activeTab:hover {
-  background: var(--color-gold-hover);
-  color: #000;
-}
-
-.panelContent {
-  padding: 2rem;
-}
-
-.formSection h2 {
+.formTitle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 1.1rem;
   color: var(--color-text);
-  margin-bottom: 1.5rem;
-  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
-.form {
-  max-width: 600px;
+.inlineForm {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
+.gridForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+.submitBtn {
+  white-space: nowrap;
+  height: 44px;
+  align-self: flex-end;
+  margin-bottom: 1rem;
+}
+
+/* ── Mensagens ── */
 .successMsg {
-  background-color: rgba(16, 185, 129, 0.1);
+  background: rgba(16,185,129,0.12);
   color: var(--color-success);
-  padding: 1rem;
+  border: 1px solid rgba(16,185,129,0.25);
+  padding: 0.85rem 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  font-size: 0.9rem;
 }
 
 .errorMsg {
-  background-color: rgba(239, 68, 68, 0.1);
+  background: rgba(239,68,68,0.12);
   color: var(--color-error);
-  padding: 1rem;
+  border: 1px solid rgba(239,68,68,0.25);
+  padding: 0.85rem 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  font-size: 0.9rem;
 }
 
-.listPreview {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+/* ── Lista de Categorias ── */
+.listSection {
+  margin-top: 1rem;
 }
 
-.listPreview h3 {
+.listTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 1rem;
   color: var(--color-text-muted);
   margin-bottom: 1rem;
 }
 
-.listPreview ul {
-  list-style: none;
+.listItem {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.listPreview li {
-  padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.2);
-  margin-bottom: 0.5rem;
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.itemOrder {
+  font-size: 0.75rem;
+  color: var(--color-gold);
+  background: rgba(212,175,55,0.1);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  font-weight: 600;
+  min-width: 28px;
+  text-align: center;
+}
+
+.itemTitle {
+  flex: 1;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.itemActions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btnEdit {
+  padding: 0.4rem;
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  transition: var(--transition);
+}
+.btnEdit:hover { color: var(--color-gold); background: rgba(212,175,55,0.1); }
+
+.btnDelete {
+  padding: 0.4rem;
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  transition: var(--transition);
+}
+.btnDelete:hover { color: var(--color-error); background: rgba(239,68,68,0.1); }
+
+.btnExpand {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.4rem 0.6rem;
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  transition: var(--transition);
+}
+.btnExpand:hover { color: var(--color-gold); background: rgba(212,175,55,0.1); }
+
+.btnSave {
+  padding: 0.4rem;
+  color: var(--color-success);
+  border-radius: 6px;
+  transition: var(--transition);
+}
+.btnSave:hover { background: rgba(16,185,129,0.1); }
+
+.btnCancel {
+  padding: 0.4rem;
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  transition: var(--transition);
+}
+.btnCancel:hover { color: var(--color-error); background: rgba(239,68,68,0.08); }
+
+.editRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.editInput {
+  flex: 1;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--color-gold);
+  color: var(--color-text);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+}
+
+.editInputSmall {
+  width: 70px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--color-gold);
+  color: var(--color-text);
+  padding: 0.5rem 0.5rem;
+  border-radius: 6px;
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+}
+
+/* ── Aulas ── */
+.lessonCard {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.lessonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  gap: 1rem;
+}
+
+.lessonMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.lessonCategory {
+  font-size: 0.7rem;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.lessonTitle {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.editPanel {
+  border-top: 1px solid var(--color-border);
+  padding: 1.25rem;
+  background: rgba(0,0,0,0.2);
+}
+
+.editActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.btnCancelText {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+.btnCancelText:hover { color: var(--color-error); }
+
+/* ── Materiais / Anexos ── */
+.materialsPanel {
+  border-top: 1px solid rgba(212,175,55,0.2);
+  padding: 1.25rem;
+  background: rgba(212,175,55,0.04);
+}
+
+.materialsPanelTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--color-gold);
+  margin-bottom: 1rem;
+}
+
+.materialsForm {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.matSubmitBtn {
+  height: 44px;
+  align-self: flex-end;
+  margin-bottom: 1rem;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.noMaterials {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.materialsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.materialItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+}
+
+.matBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-gold);
+  background: rgba(212,175,55,0.1);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  white-space: nowrap;
+}
+
+.matTitle {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.matLink {
+  padding: 0.3rem;
+  color: var(--color-text-muted);
+  transition: var(--transition);
   border-radius: 4px;
 }
+.matLink:hover { color: var(--color-gold); }
+
+/* ── Modal de Confirmação ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+}
+
+.modal h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+.modal p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btnDanger {
+  background: var(--color-error);
+  color: #fff;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  transition: var(--transition);
+}
+.btnDanger:hover { opacity: 0.85; }

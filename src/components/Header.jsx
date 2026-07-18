@@ -17,7 +17,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={`container ${styles.headerContent}`}>
         <div className={styles.logo} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          <h2>Comunidade de Estudos</h2>
+          <h2>Rumo à Aprovação</h2>
         </div>
         <nav className={styles.nav}>
           {isAdmin && (
