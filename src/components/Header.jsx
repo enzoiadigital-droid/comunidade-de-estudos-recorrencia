@@ -13,12 +13,12 @@ export default function Header() {
   }, []);
 
   const checkAdmin = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
       const { data } = await supabase
         .from('members')
         .select('is_admin')
-        .eq('id', session.user.id)
+        .eq('id', user.id)
         .single();
       
       if (data?.is_admin) {
