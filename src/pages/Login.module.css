@@ -10,13 +10,13 @@
 
 .loginCard {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   padding: 2.5rem;
 }
 
 .logo {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 
 .logo h1 {
@@ -28,6 +28,57 @@
 .logo p {
   color: var(--color-text-muted);
   font-size: 0.875rem;
+}
+
+/* ── Tabs Login / Criar Conta ── */
+.tabs {
+  display: flex;
+  background: rgba(0,0,0,0.3);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 1.75rem;
+  gap: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  transition: var(--transition);
+  font-family: var(--font-family);
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tabActive {
+  background: var(--color-gold);
+  color: #000 !important;
+}
+
+/* ── Info de cadastro ── */
+.signupInfo {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.signupInfo span {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .form {
@@ -63,6 +114,7 @@
   font-size: 0.875rem;
   margin-bottom: 1rem;
   border: 1px solid rgba(239, 68, 68, 0.2);
+  line-height: 1.5;
 }
 
 .success {
