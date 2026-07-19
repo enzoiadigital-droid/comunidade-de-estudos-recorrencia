@@ -52,40 +52,32 @@ export default function Login() {
       return;
     }
 
-    // 1. Verifica se o e-mail tem assinatura ativa na tabela members
-    const { data: hasSubscription, error: checkError } = await supabase
-      .rpc('check_member_email', { member_email: email });
-
-    if (checkError) {
-      setError('Erro ao validar e-mail. Tente novamente.');
-      setLoading(false);
-      return;
-    }
-
-    if (!hasSubscription) {
-      setError('Este e-mail não tem uma assinatura ativa. Verifique se usou o mesmo e-mail da compra ou entre em contato com o suporte.');
-      setLoading(false);
-      return;
-    }
-
-    // 2. Cria a conta no Supabase Auth
-    const { error: signupError } = await supabase.auth.signUp({ email, password });
-
-    if (signupError) {
-      if (signupError.message.includes('already registered')) {
-        setError('Este e-mail já possui uma conta. Faça login normalmente.');
-      } else {
-        setError(signupError.message);
+    // Chama a Edge Function que usa Admin API (bypassa validação de e-mail e rate limit)
+    const res = await fetch(
+      'https://xcecccxiljukxlalruxy.supabase.co/functions/v1/create-member-account',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), password }),
       }
+    );
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      setError(result.error || 'Erro ao criar conta. Tente novamente.');
       setLoading(false);
       return;
     }
 
-    // 3. O trigger no banco já vai linkar auth_id automaticamente.
-    //    Faz login direto.
-    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+    // Conta criada com sucesso — faz login direto
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
     if (loginError) {
-      setMessage('Conta criada! Agora faça seu login.');
+      setMessage('Conta criada com sucesso! Agora faça seu login.');
       switchMode('login');
     }
     setLoading(false);
