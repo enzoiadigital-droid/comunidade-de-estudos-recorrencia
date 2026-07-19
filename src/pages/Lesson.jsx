@@ -6,7 +6,7 @@ import SubscribeBanner from '../components/SubscribeBanner';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import styles from './Lesson.module.css';
-import { ArrowLeft, Download, CheckCircle2, FileText, LayoutList, Lock, Sparkles, LogIn } from 'lucide-react';
+import { ArrowLeft, Download, CheckCircle2, FileText, LayoutList, Lock, Sparkles, LogIn, X } from 'lucide-react';
 
 // ── Gate: Acesso negado para anônimos em aula gratuita ──────────────────
 function FreeAccessGate({ lesson, navigate }) {
@@ -37,42 +37,64 @@ function FreeAccessGate({ lesson, navigate }) {
 
 // ── Gate: Conteúdo premium bloqueado ────────────────────────────────────
 function PremiumAccessGate({ lesson, navigate, settings, isLoggedIn }) {
-  const subscribeUrl = settings.subscribe_url;
+  const [showModal, setShowModal] = useState(false);
+  // Usa URL do banco se houver, caso contrário o link padrão
+  const subscribeUrl = settings.subscribe_url || 'https://pay.hotmart.com/Q106791728W?checkoutMode=10&sck=bloqueio';
 
   const handleSubscribe = () => {
-    if (subscribeUrl) window.open(subscribeUrl, '_blank');
-    else navigate('/login#criar-conta');
+    window.open(subscribeUrl, '_blank');
   };
 
   return (
-    <div className={styles.accessGate}>
-      {lesson.cover_image_url && (
-        <div className={styles.gateCover}>
-          <img src={lesson.cover_image_url} alt={lesson.title} />
-          <div className={styles.gateCoverOverlay} />
+    <>
+      <div className={styles.accessGate}>
+        {lesson.cover_image_url && (
+          <div className={styles.gateCover}>
+            <img src={lesson.cover_image_url} alt={lesson.title} />
+            <div className={styles.gateCoverOverlay} />
+          </div>
+        )}
+        <div className={styles.gateContent}>
+          <div className={`${styles.gateIcon} ${styles.gateIconLock}`}><Lock size={32} /></div>
+          <button className={styles.gateBtnPrimary} onClick={() => setShowModal(true)}>
+            DESBLOQUEAR
+          </button>
+        </div>
+      </div>
+
+      {showModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <button className={styles.modalCloseBtn} onClick={() => setShowModal(false)}><X size={20} /></button>
+            
+            {!isLoggedIn ? (
+              <>
+                <h2><Lock size={20} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '8px' }} /> Esta aula é exclusiva para assinantes</h2>
+                <p>Entre na sua conta para verificar seu acesso ou assine a comunidade para desbloquear todas as aulas e materiais.</p>
+                <div className={styles.modalActions}>
+                  <button className={styles.modalBtnSecondary} onClick={() => navigate('/login')}>
+                    Entrar na minha conta
+                  </button>
+                  <button className={styles.modalBtnPrimary} onClick={handleSubscribe}>
+                    Quero ser assinante
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2><Lock size={20} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '8px' }} /> Desbloqueie esta aula</h2>
+                <p>Tenha acesso a todas as lives gravadas, ao curso de Anki e aos materiais exclusivos da Comunidade Rumo à Aprovação.</p>
+                <div className={styles.modalActions}>
+                  <button className={styles.modalBtnPrimary} onClick={handleSubscribe}>
+                    Assinar e desbloquear
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
-      <div className={styles.gateContent}>
-        <div className={`${styles.gateIcon} ${styles.gateIconLock}`}><Lock size={32} /></div>
-        <h2>Conteúdo exclusivo para assinantes</h2>
-        <p>Esta aula faz parte do conteúdo premium. Assine e tenha acesso ilimitado a todas as aulas e materiais.</p>
-        <div className={styles.gateActions}>
-          <button className={styles.gateBtnPrimary} onClick={handleSubscribe}>
-            ✦ Assinar agora
-          </button>
-          {!isLoggedIn && (
-            <button className={styles.gateBtnSecondary} onClick={() => navigate('/login')}>
-              <LogIn size={16} /> Já sou assinante
-            </button>
-          )}
-        </div>
-        {isLoggedIn && (
-          <p className={styles.gateNote}>
-            Você está logado mas sua conta ainda não tem uma assinatura ativa.
-          </p>
-        )}
-      </div>
-    </div>
+    </>
   );
 }
 
