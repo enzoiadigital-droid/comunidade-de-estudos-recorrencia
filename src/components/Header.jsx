@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { LogOut, Settings } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -8,9 +8,13 @@ import styles from './Header.module.css';
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAdmin } = useAuth();
   const { settings } = useSettings();
   const [scrolled, setScrolled] = useState(false);
+
+  // Verifica se está na página inicial
+  const isHome = location.pathname === '/';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -26,8 +30,11 @@ export default function Header() {
     navigate('/login');
   };
 
+  // Se não estiver na home, o header fica sempre sólido/blur para não misturar com os textos das aulas
+  const headerClass = `${styles.header} ${(scrolled || !isHome) ? styles.headerScrolled : ''}`;
+
   return (
-    <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`}>
+    <header className={headerClass}>
       <div className={`container ${styles.headerContent}`}>
         <div className={styles.logo} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           <h2
