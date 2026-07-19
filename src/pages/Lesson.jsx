@@ -202,7 +202,7 @@ export default function Lesson() {
               </div>
             )}
 
-            {canWatch && materials.length > 0 && (
+            {materials.length > 0 && (
               <div className={`glass-panel ${styles.section}`}>
                 <div className={styles.sectionHeader}>
                   <Download className={styles.sectionIcon} />
@@ -210,19 +210,33 @@ export default function Lesson() {
                 </div>
                 <div className={styles.materialsList}>
                   {materials.map(material => (
-                    <a
-                      key={material.id}
-                      href={material.file_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.materialCard}
-                    >
-                      <div className={styles.materialIcon}><FileText size={24} /></div>
-                      <div className={styles.materialInfo}>
-                        <h4>{material.title}</h4>
-                        <span>Download</span>
+                    canWatch ? (
+                      <a
+                        key={material.id}
+                        href={material.file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.materialCard}
+                      >
+                        <div className={styles.materialIcon}><FileText size={24} /></div>
+                        <div className={styles.materialInfo}>
+                          <h4>{material.title}</h4>
+                          <span>Download</span>
+                        </div>
+                      </a>
+                    ) : (
+                      <div
+                        key={material.id}
+                        className={`${styles.materialCard} ${styles.materialCardLocked}`}
+                        title="Conteúdo exclusivo para assinantes"
+                      >
+                        <div className={styles.materialIconLocked}><Lock size={20} /></div>
+                        <div className={styles.materialInfo}>
+                          <h4>{material.title}</h4>
+                          <span>Bloqueado</span>
+                        </div>
                       </div>
-                    </a>
+                    )
                   ))}
                 </div>
               </div>

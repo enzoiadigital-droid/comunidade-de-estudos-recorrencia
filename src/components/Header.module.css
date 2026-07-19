@@ -41,6 +41,12 @@
   gap: 1.5rem;
 }
 
+@media (max-width: 640px) {
+  .nav {
+    gap: 0.8rem;
+  }
+}
+
 .adminBtn {
   display: flex;
   align-items: center;
@@ -93,9 +99,20 @@
   border-radius: 6px;
   font-size: 0.85rem;
   transition: var(--transition);
+  white-space: nowrap;
 }
 
 .signupBtn:hover {
   background: var(--color-gold-hover);
   transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .signupBtn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  .loginBtn {
+    font-size: 0.85rem;
+  }
 }
