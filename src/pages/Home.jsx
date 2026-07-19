@@ -14,7 +14,7 @@ export default function Home() {
   const [fetchError, setFetchError] = useState(null);
   const navigate = useNavigate();
   const { settings } = useSettings();
-  const { session, isSubscriber } = useAuth();
+  const { session, isSubscriber, userName } = useAuth();
 
   useEffect(() => { fetchContent(); }, []);
 
