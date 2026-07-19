@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import styles from './Login.module.css';
 
@@ -11,6 +11,13 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
+
+  // Abre direto na aba "Criar Conta" se a URL tiver #criar-conta
+  useEffect(() => {
+    if (window.location.hash === '#criar-conta') {
+      setMode('signup');
+    }
+  }, []);
 
   const reset = () => {
     setError(null);
