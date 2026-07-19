@@ -7,7 +7,6 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSubscriber, setIsSubscriber] = useState(false);
-  const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,7 +26,6 @@ export function AuthProvider({ children }) {
       } else {
         setIsAdmin(false);
         setIsSubscriber(false);
-        setUserName('');
         setLoading(false);
       }
     });
@@ -40,20 +38,19 @@ export function AuthProvider({ children }) {
     const { data: adminData } = await supabase.rpc('is_admin');
     setIsAdmin(adminData === true);
 
-    // 2. Verifica se é assinante e busca o nome na tabela members
+    // 2. Verifica se é assinante: e-mail na tabela members
     const { data: memberData } = await supabase
       .from('members')
-      .select('email, name')
+      .select('email')
       .eq('auth_id', user.id)
       .maybeSingle();
 
     setIsSubscriber(!!memberData);
-    setUserName(memberData?.name || '');
     setLoading(false);
   };
 
   return (
-    <AuthContext.Provider value={{ session, isAdmin, isSubscriber, userName, loading }}>
+    <AuthContext.Provider value={{ session, isAdmin, isSubscriber, loading }}>
       {children}
     </AuthContext.Provider>
   );

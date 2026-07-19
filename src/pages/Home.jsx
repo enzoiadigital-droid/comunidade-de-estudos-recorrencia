@@ -14,7 +14,7 @@ export default function Home() {
   const [fetchError, setFetchError] = useState(null);
   const navigate = useNavigate();
   const { settings } = useSettings();
-  const { session, isSubscriber, userName } = useAuth();
+  const { session, isSubscriber, isAdmin } = useAuth();
 
   useEffect(() => { fetchContent(); }, []);
 
@@ -68,50 +68,6 @@ export default function Home() {
     navigate(`/lesson/${lesson.id}`);
   };
 
-  // Helper para tentar descobrir o gênero pelo nome (sem IA)
-  const getGender = (name) => {
-    if (!name) return 'female';
-    const first = name.trim().split(' ')[0].toLowerCase();
-    
-    const exceptions = {
-      'andré': 'male', 'guilherme': 'male', 'filipe': 'male', 'felipe': 'male', 'henrique': 'male',
-      'alexandre': 'male', 'jorge': 'male', 'kauã': 'male', 'luca': 'male', 'luigi': 'male',
-      'luis': 'male', 'luís': 'male', 'lucas': 'male', 'matheus': 'male', 'mateus': 'male',
-      'marcos': 'male', 'thiago': 'male', 'tiago': 'male', 'tomas': 'male', 'tomás': 'male',
-      'nicolas': 'male', 'thomas': 'male', 'cauã': 'male', 'jonatas': 'male', 'davi': 'male',
-      'gabriel': 'male', 'rafael': 'male', 'daniel': 'male', 'samuel': 'male', 'miguel': 'male',
-      'emanuel': 'male', 'ariel': 'male', 'israel': 'male', 'vitor': 'male', 'arthur': 'male',
-      'heitor': 'male', 'igor': 'male', 'william': 'male', 'yuri': 'male', 'enzo': 'male',
-      'lorenzo': 'male', 'ryan': 'male', 'kauan': 'male', 'jean': 'male', 'luan': 'male',
-      'renan': 'male', 'alan': 'male', 'allan': 'male', 'christian': 'male', 'cristian': 'male',
-      'kelvin': 'male', 'kevin': 'male', 'nathan': 'male', 'raí': 'male', 'ruan': 'male',
-      'yago': 'male', 'iago': 'male', 'caio': 'male', 'diego': 'male',
-      // Female exceptions
-      'raquel': 'female', 'mabel': 'female', 'hazel': 'female', 'abigail': 'female', 'cleo': 'female',
-      'beatriz': 'female', 'inez': 'female', 'inês': 'female', 'elis': 'female', 'lais': 'female',
-      'laís': 'female', 'íris': 'female', 'thais': 'female', 'thaís': 'female', 'alice': 'female',
-      'clarice': 'female', 'aline': 'female', 'caroline': 'female', 'francine': 'female', 'jaqueline': 'female',
-      'michelle': 'female', 'monique': 'female', 'viviane': 'female', 'gisele': 'female', 'ariane': 'female',
-      'daiane': 'female', 'rejane': 'female', 'rose': 'female', 'miriam': 'female', 'carmen': 'female',
-      'suelen': 'female', 'karen': 'female', 'yasmin': 'female', 'ellen': 'female', 'ester': 'female',
-      'ruthe': 'female', 'ruth': 'female'
-    };
-
-    if (exceptions[first]) return exceptions[first];
-    if (first.endsWith('a')) return 'female';
-    return 'male';
-  };
-
-  const firstName = userName ? userName.trim().split(' ')[0] : '';
-  const gender = getGender(userName);
-  
-  let dynamicTitle = settings.hero_title || 'Bem-vinda à Comunidade';
-  if (gender === 'male') {
-    dynamicTitle = dynamicTitle.replace(/Bem-vinda/gi, 'Bem-vindo').replace(/Bem vinda/gi, 'Bem vindo');
-  } else {
-    dynamicTitle = dynamicTitle.replace(/Bem-vindo/gi, 'Bem-vinda').replace(/Bem vindo/gi, 'Bem vinda');
-  }
-
   if (loading) {
     return (
       <div className={styles.loading}>
@@ -128,11 +84,6 @@ export default function Home() {
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={`container ${styles.heroContent}`}>
-          {firstName && (
-            <div style={{ color: 'var(--color-gold)', fontSize: '1.2rem', fontWeight: 600, marginBottom: '0.5rem' }}>
-              Olá, {firstName}!
-            </div>
-          )}
           <h1
             style={{
               '--hero-size-desktop': `${settings.hero_title_size_desktop}rem`,
@@ -140,7 +91,7 @@ export default function Home() {
             }}
             className={styles.heroTitle}
           >
-            {dynamicTitle}
+            {settings.hero_title}
           </h1>
           <p>{settings.hero_subtitle}</p>
 
