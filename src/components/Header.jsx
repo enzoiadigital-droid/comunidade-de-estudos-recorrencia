@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { LogOut, Settings } from 'lucide-react';
+import { LogOut, Settings, LogIn, UserPlus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
@@ -9,11 +9,10 @@ import styles from './Header.module.css';
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAdmin } = useAuth();
+  const { session, isAdmin } = useAuth();
   const { settings } = useSettings();
   const [scrolled, setScrolled] = useState(false);
 
-  // Verifica se está na página inicial
   const isHome = location.pathname === '/';
 
   useEffect(() => {
@@ -27,10 +26,9 @@ export default function Header() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/login');
+    navigate('/');
   };
 
-  // Se não estiver na home, o header fica sempre sólido/blur para não misturar com os textos das aulas
   const headerClass = `${styles.header} ${(scrolled || !isHome) ? styles.headerScrolled : ''}`;
 
   return (
@@ -47,17 +45,35 @@ export default function Header() {
             {settings.header_brand_text}
           </h2>
         </div>
+
         <nav className={styles.nav}>
-          {isAdmin && (
-            <button onClick={() => navigate('/admin')} className={styles.adminBtn}>
-              <Settings size={18} />
-              <span>Painel Admin</span>
-            </button>
+          {session ? (
+            /* ── Usuário logado ── */
+            <>
+              {isAdmin && (
+                <button onClick={() => navigate('/admin')} className={styles.adminBtn}>
+                  <Settings size={18} />
+                  <span>Admin</span>
+                </button>
+              )}
+              <button onClick={handleLogout} className={styles.logoutBtn}>
+                <LogOut size={18} />
+                <span>Sair</span>
+              </button>
+            </>
+          ) : (
+            /* ── Visitante não autenticado ── */
+            <>
+              <button onClick={() => navigate('/login')} className={styles.loginBtn}>
+                <LogIn size={18} />
+                <span>Entrar</span>
+              </button>
+              <button onClick={() => navigate('/login#criar-conta')} className={styles.signupBtn}>
+                <UserPlus size={16} />
+                <span>Criar conta</span>
+              </button>
+            </>
           )}
-          <button onClick={handleLogout} className={styles.logoutBtn}>
-            <LogOut size={18} />
-            <span>Sair</span>
-          </button>
         </nav>
       </div>
     </header>

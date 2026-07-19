@@ -112,6 +112,16 @@
   border-color: rgba(212, 175, 55, 0.4);
 }
 
+/* Card bloqueado tem hover mais sutil */
+.cardLocked {
+  opacity: 0.85;
+}
+
+.cardLocked:hover {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
 .cardImageContainer {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -156,6 +166,45 @@
   opacity: 1;
 }
 
+/* Overlay de cadeado — sempre visível */
+.cardOverlayLocked {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(1px);
+}
+
+.lockIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Badge GRATUITA */
+.badgeFree {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  background: var(--color-gold);
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  z-index: 2;
+  text-transform: uppercase;
+}
+
 .playBtn {
   width: 56px;
   height: 56px;
@@ -197,3 +246,53 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.lockedLabel {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+/* Hero CTA para visitantes */
+.heroCta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.heroCtaBtn {
+  background: var(--color-gold);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  font-family: var(--font-family);
+  transition: var(--transition);
+}
+
+.heroCtaBtn:hover {
+  background: var(--color-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
+}
+
+.heroCtaSecondary {
+  background: rgba(255,255,255,0.07);
+  color: var(--color-text);
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  font-family: var(--font-family);
+  transition: var(--transition);
+}
+
+.heroCtaSecondary:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.3);
+}
+

@@ -6,13 +6,14 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSubscriber, setIsSubscriber] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session?.user) {
-        fetchAdminStatus();
+        fetchUserStatus(session.user);
       } else {
         setLoading(false);
       }
@@ -21,9 +22,10 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session?.user) {
-        fetchAdminStatus();
+        fetchUserStatus(session.user);
       } else {
         setIsAdmin(false);
+        setIsSubscriber(false);
         setLoading(false);
       }
     });
@@ -31,19 +33,24 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchAdminStatus = async () => {
-    // Usa a funcao SECURITY DEFINER para evitar recursao RLS
-    const { data, error } = await supabase.rpc('is_admin');
-    if (!error && data === true) {
-      setIsAdmin(true);
-    } else {
-      setIsAdmin(false);
-    }
+  const fetchUserStatus = async (user) => {
+    // 1. Verifica se é admin via SECURITY DEFINER (evita recursão RLS)
+    const { data: adminData } = await supabase.rpc('is_admin');
+    setIsAdmin(adminData === true);
+
+    // 2. Verifica se é assinante: e-mail na tabela members
+    const { data: memberData } = await supabase
+      .from('members')
+      .select('email')
+      .eq('auth_id', user.id)
+      .maybeSingle();
+
+    setIsSubscriber(!!memberData);
     setLoading(false);
   };
 
   return (
-    <AuthContext.Provider value={{ session, isAdmin, loading }}>
+    <AuthContext.Provider value={{ session, isAdmin, isSubscriber, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -11,6 +11,7 @@ const DEFAULTS = {
   header_brand_text: 'Rumo à Aprovação',
   header_brand_size_desktop: '1.25',
   header_brand_size_mobile: '1',
+  subscribe_url: '',
 };
 
 export function SettingsProvider({ children }) {

@@ -1,0 +1,79 @@
+.banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(90deg, rgba(11, 14, 20, 0.98) 0%, rgba(30, 22, 5, 0.98) 100%);
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-wrap: wrap;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-text);
+  font-size: 0.88rem;
+  flex: 1;
+}
+
+.content strong {
+  color: var(--color-gold);
+}
+
+.icon {
+  color: var(--color-gold);
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.btnSubscribe {
+  background: var(--color-gold);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-family: var(--font-family);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btnSubscribe:hover {
+  background: var(--color-gold-hover);
+  transform: translateY(-1px);
+}
+
+.btnDismiss {
+  color: var(--color-text-muted);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+}
+
+.btnDismiss:hover {
+  color: var(--color-text);
+}
+
+@media (max-width: 640px) {
+  .banner {
+    padding: 0.75rem 1rem;
+  }
+  .content {
+    font-size: 0.8rem;
+  }
+}

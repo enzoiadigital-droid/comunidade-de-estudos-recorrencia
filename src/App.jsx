@@ -31,9 +31,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Página de login — redireciona pra home se já está logado */}
         <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
-        <Route path="/" element={session ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/lesson/:id" element={session ? <Lesson /> : <Navigate to="/login" />} />
+
+        {/* Home e Lesson são públicas — acesso controlado internamente */}
+        <Route path="/" element={<Home />} />
+        <Route path="/lesson/:id" element={<Lesson />} />
+
+        {/* Admin protegido */}
         <Route
           path="/admin"
           element={

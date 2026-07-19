@@ -66,3 +66,36 @@
 .logoutBtn:hover {
   color: var(--color-error);
 }
+
+/* ── Botões para visitantes não autenticados ── */
+.loginBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.loginBtn:hover {
+  color: var(--color-text);
+}
+
+.signupBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--color-gold);
+  color: #000;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.signupBtn:hover {
+  background: var(--color-gold-hover);
+  transform: translateY(-1px);
+}

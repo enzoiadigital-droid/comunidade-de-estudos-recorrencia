@@ -145,7 +145,7 @@ function LessonsSection({ showMsg }) {
 
   // Nova aula
   const [newLesson, setNewLesson] = useState({
-    category_id: '', title: '', video_url: '', cover_image_url: '', summary: '', checklist: '', order_index: '0'
+    category_id: '', title: '', video_url: '', cover_image_url: '', summary: '', checklist: '', order_index: '0', is_free: false
   });
 
   useEffect(() => {
@@ -171,7 +171,7 @@ function LessonsSection({ showMsg }) {
     }]);
     if (error) { showMsg(error.message, 'error'); return; }
     showMsg('Aula criada!');
-    setNewLesson({ category_id: '', title: '', video_url: '', cover_image_url: '', summary: '', checklist: '', order_index: '0' });
+    setNewLesson({ category_id: '', title: '', video_url: '', cover_image_url: '', summary: '', checklist: '', order_index: '0', is_free: false });
     fetchLessons();
   };
 
@@ -279,6 +279,17 @@ function LessonsSection({ showMsg }) {
             <label>Checklist — O que fazer agora (uma tarefa por linha, ex: "- Baixar o PDF")</label>
             <textarea rows="3" value={newLesson.checklist} onChange={e => setNewLesson(p => ({ ...p, checklist: e.target.value }))}></textarea>
           </div>
+          <div className="input-group" style={{ gridColumn: '1 / -1' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={newLesson.is_free}
+                onChange={e => setNewLesson(p => ({ ...p, is_free: e.target.checked }))}
+                style={{ width: 16, height: 16, accentColor: 'var(--color-gold)' }}
+              />
+              <span>Aula gratuita <span style={{ color: 'var(--color-text-muted)', fontWeight: 400 }}>(visível sem assinatura para quem tem conta)</span></span>
+            </label>
+          </div>
           <div style={{ gridColumn: '1 / -1' }}>
             <button type="submit" className="btn-primary"><Save size={16} /> Salvar Aula</button>
           </div>
@@ -372,6 +383,17 @@ function LessonsSection({ showMsg }) {
                   <div className="input-group" style={{ gridColumn: '1 / -1' }}>
                     <label>Checklist</label>
                     <textarea rows="3" value={editingLesson.checklist || ''} onChange={e => setEditingLesson(p => ({ ...p, checklist: e.target.value }))}></textarea>
+                  </div>
+                  <div className="input-group" style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={editingLesson.is_free || false}
+                        onChange={e => setEditingLesson(p => ({ ...p, is_free: e.target.checked }))}
+                        style={{ width: 16, height: 16, accentColor: 'var(--color-gold)' }}
+                      />
+                      <span>Aula gratuita <span style={{ color: 'var(--color-text-muted)', fontWeight: 400 }}>(visível sem assinatura para quem tem conta)</span></span>
+                    </label>
                   </div>
                 </div>
                 <div className={styles.editActions}>
@@ -497,6 +519,7 @@ function SettingsSection({ showMsg }) {
     header_brand_text: '',
     header_brand_size_desktop: '',
     header_brand_size_mobile: '',
+    subscribe_url: '',
   });
 
   // Sincroniza form quando settings carregam
@@ -509,6 +532,7 @@ function SettingsSection({ showMsg }) {
       header_brand_text: settings.header_brand_text ?? '',
       header_brand_size_desktop: settings.header_brand_size_desktop ?? '1.25',
       header_brand_size_mobile: settings.header_brand_size_mobile ?? '1',
+      subscribe_url: settings.subscribe_url ?? '',
     });
   }, [settings]);
 
@@ -569,6 +593,24 @@ function SettingsSection({ showMsg }) {
             <label>Tamanho da fonte — Mobile (rem)</label>
             <input type="number" step="0.05" min="0.5" max="3" value={form.header_brand_size_mobile} onChange={set('header_brand_size_mobile')} />
             <small style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>Padrão: 1rem → atual: {form.header_brand_size_mobile}rem</small>
+          </div>
+        </div>
+      </div>
+
+      {/* Assinatura */}
+      <div className={`glass-panel ${styles.formCard}`}>
+        <h2 className={styles.formTitle}><SlidersHorizontal size={18} /> Link de Assinatura</h2>
+        <div className={styles.gridForm}>
+          <div className="input-group" style={{ gridColumn: '1 / -1' }}>
+            <label>URL do botão "Assinar agora"</label>
+            <input
+              value={form.subscribe_url}
+              onChange={set('subscribe_url')}
+              placeholder="https://pay.hotmart.com/..."
+            />
+            <small style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>
+              Cole aqui o link da página de checkout ou vendas. Deixe vazio para redirecionar à tela de cadastro.
+            </small>
           </div>
         </div>
       </div>
