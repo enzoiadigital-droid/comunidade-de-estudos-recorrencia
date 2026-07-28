@@ -274,17 +274,52 @@
   font-size: 1.25rem;
 }
 
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 .backBtn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--color-text-muted);
-  margin-bottom: 1.5rem;
   transition: var(--transition);
 }
 
 .backBtn:hover {
   color: var(--color-gold);
+}
+
+.nextLessonBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-gold);
+  color: #000;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.nextLessonBtn:hover {
+  background: var(--color-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+@media (max-width: 640px) {
+  .nextLessonBtn {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.85rem;
+  }
 }
 
 .lessonTitle {

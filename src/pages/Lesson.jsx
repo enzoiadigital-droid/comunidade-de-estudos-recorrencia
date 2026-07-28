@@ -6,7 +6,7 @@ import SubscribeBanner from '../components/SubscribeBanner';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import styles from './Lesson.module.css';
-import { ArrowLeft, Download, CheckCircle2, FileText, LayoutList, Lock, Sparkles, LogIn, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Download, CheckCircle2, FileText, LayoutList, Lock, Sparkles, LogIn, X } from 'lucide-react';
 
 // ── Gate: Acesso negado para anônimos em aula gratuita ──────────────────
 function FreeAccessGate({ lesson, navigate }) {
@@ -103,6 +103,7 @@ export default function Lesson() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [lesson, setLesson] = useState(null);
+  const [nextLesson, setNextLesson] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const { session, isSubscriber } = useAuth();
@@ -116,6 +117,17 @@ export default function Lesson() {
 
     if (lesError) { setLoading(false); return; }
     setLesson(lesData);
+
+    const { data: nextData } = await supabase
+      .from('lessons')
+      .select('id, title')
+      .eq('category_id', lesData.category_id)
+      .gt('order_index', lesData.order_index)
+      .order('order_index', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+      
+    setNextLesson(nextData || null);
 
     const { data: matData } = await supabase
       .from('materials').select('*').eq('lesson_id', id);
@@ -165,10 +177,19 @@ export default function Lesson() {
       <Header />
 
       <main className="container" style={{ paddingTop: '100px' }}>
-        <button className={styles.backBtn} onClick={() => navigate('/')}>
-          <ArrowLeft size={20} />
-          <span>Voltar para o Início</span>
-        </button>
+        <div className={styles.pageHeader}>
+          <button className={styles.backBtn} onClick={() => navigate('/')}>
+            <ArrowLeft size={20} />
+            <span>Voltar para o Início</span>
+          </button>
+
+          {nextLesson && (
+            <button className={styles.nextLessonBtn} onClick={() => navigate(`/lesson/${nextLesson.id}`)}>
+              <span>Próxima Aula</span>
+              <ArrowRight size={20} />
+            </button>
+          )}
+        </div>
 
         <h1 className={styles.lessonTitle}>{lesson.title}</h1>
 
