@@ -139,7 +139,7 @@ export default function Home() {
           {userType === 'anonymous' && (
             <div className={styles.heroCta}>
               <button className={styles.heroCtaBtn} onClick={() => navigate('/login#criar-conta')}>
-                ✦ Criar conta gratuita
+                ✦ Criar conta
               </button>
               <button className={styles.heroCtaSecondary} onClick={() => navigate('/login')}>
                 Já tenho conta

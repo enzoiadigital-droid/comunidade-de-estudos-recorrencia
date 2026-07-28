@@ -39,6 +39,9 @@ export default function Header() {
             src="https://i.postimg.cc/P5yhQdsY/Rumo-a-Aprovacao-dourado-transparente-final-(1).png"
             alt={settings.header_brand_text || 'Rumo à Aprovação'}
             className={styles.brandLogo}
+            fetchPriority="high"
+            decoding="sync"
+            loading="eager"
           />
         </div>
 
