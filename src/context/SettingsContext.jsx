@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 const SettingsContext = createContext({});
 
 const DEFAULTS = {
-  hero_title: 'Bem-vinda à Comunidade',
+  hero_title: 'Bem-vindo à Comunidade',
   hero_subtitle: 'O seu caminho para a aprovação começa aqui.',
   hero_title_size_desktop: '3',
   hero_title_size_mobile: '1.75',

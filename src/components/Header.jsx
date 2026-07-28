@@ -35,15 +35,11 @@ export default function Header() {
     <header className={headerClass}>
       <div className={`container ${styles.headerContent}`}>
         <div className={styles.logo} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          <h2
-            className={styles.brandName}
-            style={{
-              '--brand-size-desktop': desktopSize,
-              '--brand-size-mobile': mobileSize,
-            }}
-          >
-            {settings.header_brand_text}
-          </h2>
+          <img
+            src="https://i.postimg.cc/P5yhQdsY/Rumo-a-Aprovacao-dourado-transparente-final-(1).png"
+            alt={settings.header_brand_text || 'Rumo à Aprovação'}
+            className={styles.brandLogo}
+          />
         </div>
 
         <nav className={styles.nav}>

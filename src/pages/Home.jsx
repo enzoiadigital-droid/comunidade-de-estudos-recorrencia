@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Header from '../components/Header';
@@ -15,6 +15,42 @@ export default function Home() {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { session, isSubscriber, isAdmin } = useAuth();
+
+  const carouselRefs = useRef({});
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragMoved, setDragMoved] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e, id) => {
+    setIsDragging(true);
+    setDragMoved(false);
+    const carousel = carouselRefs.current[id];
+    if (carousel) {
+      setStartX(e.pageX - carousel.offsetLeft);
+      setScrollLeft(carousel.scrollLeft);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e, id) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    setDragMoved(true);
+    const carousel = carouselRefs.current[id];
+    if (carousel) {
+      const x = e.pageX - carousel.offsetLeft;
+      const walk = (x - startX) * 2;
+      carousel.scrollLeft = scrollLeft - walk;
+    }
+  };
 
   useEffect(() => { fetchContent(); }, []);
 
@@ -64,7 +100,11 @@ export default function Home() {
   };
 
   // Navegação com controle de acesso
-  const handleCardClick = (lesson) => {
+  const handleCardClick = (e, lesson) => {
+    if (dragMoved) {
+      e.preventDefault();
+      return;
+    }
     navigate(`/lesson/${lesson.id}`);
   };
 
@@ -129,7 +169,14 @@ export default function Home() {
               <h3 className={styles.categoryTitle}>{category.title}</h3>
             </div>
 
-            <div className={styles.carouselWrapper}>
+            <div 
+              className={styles.carouselWrapper}
+              ref={el => carouselRefs.current[category.id] = el}
+              onMouseDown={(e) => handleMouseDown(e, category.id)}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={(e) => handleMouseMove(e, category.id)}
+            >
               <div className={styles.carousel}>
                 {category.lessons.length === 0 && (
                   <p style={{ color: 'var(--color-text-muted)', padding: '1rem 2rem' }}>Nenhuma aula nesta trilha ainda.</p>
@@ -143,7 +190,7 @@ export default function Home() {
                     <div
                       key={lesson.id}
                       className={`${styles.card} ${isLocked ? styles.cardLocked : ''}`}
-                      onClick={() => handleCardClick(lesson)}
+                      onClick={(e) => handleCardClick(e, lesson)}
                     >
                       <div className={styles.cardImageContainer}>
                         {lesson.cover_image_url ? (
