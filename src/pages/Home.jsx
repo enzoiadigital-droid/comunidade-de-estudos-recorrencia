@@ -131,7 +131,7 @@ export default function Home() {
             }}
             className={styles.heroTitle}
           >
-            {settings.hero_title}
+            {settings.hero_title?.replace('Bem-vinda', 'Bem-vindo')}
           </h1>
           <p>{settings.hero_subtitle}</p>
 

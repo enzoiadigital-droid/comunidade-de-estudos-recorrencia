@@ -557,7 +557,7 @@ function SettingsSection({ showMsg }) {
         <div className={styles.gridForm}>
           <div className="input-group" style={{ gridColumn: '1 / -1' }}>
             <label>Texto do Título</label>
-            <input value={form.hero_title} onChange={set('hero_title')} placeholder="Bem-vinda à Comunidade" />
+            <input value={form.hero_title} onChange={set('hero_title')} placeholder="Bem-vindo à Comunidade" />
           </div>
           <div className="input-group" style={{ gridColumn: '1 / -1' }}>
             <label>Subtítulo</label>
