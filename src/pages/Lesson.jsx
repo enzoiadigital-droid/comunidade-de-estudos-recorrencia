@@ -118,16 +118,22 @@ export default function Lesson() {
     if (lesError) { setLoading(false); return; }
     setLesson(lesData);
 
-    const { data: nextData } = await supabase
+    const { data: allCategoryLessons } = await supabase
       .from('lessons')
       .select('id, title')
       .eq('category_id', lesData.category_id)
-      .gt('order_index', lesData.order_index)
-      .order('order_index', { ascending: true })
-      .limit(1)
-      .maybeSingle();
-      
-    setNextLesson(nextData || null);
+      .order('order_index', { ascending: true });
+
+    if (allCategoryLessons && allCategoryLessons.length > 0) {
+      const currentIndex = allCategoryLessons.findIndex(l => l.id === id);
+      if (currentIndex !== -1 && currentIndex + 1 < allCategoryLessons.length) {
+        setNextLesson(allCategoryLessons[currentIndex + 1]);
+      } else {
+        setNextLesson(null);
+      }
+    } else {
+      setNextLesson(null);
+    }
 
     const { data: matData } = await supabase
       .from('materials').select('*').eq('lesson_id', id);
