@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
-import { Home, BookOpen, Clock, Layers, TrendingUp, User, LogOut } from 'lucide-react';
+import { Home, BookOpen, Clock, Layers, TrendingUp, User, LogOut, ShieldCheck } from 'lucide-react';
 import styles from './AppLayout.module.css';
 
 export default function AppLayout() {
-  const { session, loading } = useAuth();
+  const { session, loading, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,6 +25,10 @@ export default function AppLayout() {
     { label: 'Conta', path: '/conta', icon: User },
   ];
 
+  if (isAdmin) {
+    navItems.push({ label: 'Painel Admin', path: '/admin', icon: ShieldCheck, desktopOnly: true });
+  }
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/login');
@@ -32,7 +36,6 @@ export default function AppLayout() {
 
   const isActive = (path) => {
     return location.pathname === path;
-    return location.pathname.startsWith(path);
   };
 
   const handleNav = (path) => {
@@ -91,7 +94,7 @@ export default function AppLayout() {
 
       {/* Bottom Nav Mobile */}
       <nav className={styles.bottomNav}>
-        {navItems.map((item) => {
+        {navItems.filter(item => !item.desktopOnly).map((item) => {
           const Icon = item.icon;
           return (
             <button
