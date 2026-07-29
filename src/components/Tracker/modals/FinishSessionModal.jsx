@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ChevronDown } from 'lucide-react';
 import Modal from '../../Modal';
 
 export default function FinishSessionModal({ isOpen, onClose, onFinish, sessionData }) {
@@ -63,15 +64,18 @@ export default function FinishSessionModal({ isOpen, onClose, onFinish, sessionD
             <label style={{ display: 'block', color: 'var(--color-text)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
               Status do Objetivo ("{sessionData.goal}")
             </label>
-            <select 
-              value={goalStatus}
-              onChange={(e) => setGoalStatus(e.target.value)}
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'rgba(0,0,0,0.2)', color: 'var(--color-text)' }}
-            >
-              <option value="Concluído" style={{background: '#1a2234'}}>Concluído</option>
-              <option value="Parcialmente concluído" style={{background: '#1a2234'}}>Parcialmente concluído</option>
-              <option value="Não concluído" style={{background: '#1a2234'}}>Não concluído</option>
-            </select>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <select 
+                value={goalStatus}
+                onChange={(e) => setGoalStatus(e.target.value)}
+                style={{ width: '100%', padding: '0.75rem', paddingRight: '2.5rem', appearance: 'none', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'rgba(0,0,0,0.2)', color: 'var(--color-text)' }}
+              >
+                <option value="Concluído" style={{background: '#1a2234'}}>Concluído</option>
+                <option value="Parcialmente concluído" style={{background: '#1a2234'}}>Parcialmente concluído</option>
+                <option value="Não concluído" style={{background: '#1a2234'}}>Não concluído</option>
+              </select>
+              <ChevronDown size={16} style={{ position: 'absolute', right: '12px', pointerEvents: 'none', color: 'var(--color-text)' }} />
+            </div>
           </div>
         )}
 
