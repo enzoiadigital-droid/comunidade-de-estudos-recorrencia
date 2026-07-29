@@ -7,6 +7,12 @@ const STUDY_TYPES = [
   'Flashcards', 'Redação', 'Simulado', 'Outro'
 ];
 
+const getLocalToday = () => {
+  const d = new Date();
+  const tzOffset = d.getTimezoneOffset() * 60000;
+  return new Date(d.getTime() - tzOffset).toISOString().split('T')[0];
+};
+
 export default function ManualSessionModal({ isOpen, onClose, onSave, initialData = null }) {
   const [subject, setSubject] = useState('');
   const [topic, setTopic] = useState('');
@@ -32,7 +38,7 @@ export default function ManualSessionModal({ isOpen, onClose, onSave, initialDat
         setTopic(initialData.topic || '');
         setStudyType(initialData.study_type || 'Aula');
         setGoal(initialData.goal || '');
-        setDate(initialData.session_date || new Date().toISOString().split('T')[0]);
+        setDate(initialData.session_date || getLocalToday());
         setDurationMinutes(initialData.duration_minutes || '');
         setGoalStatus(initialData.goal_status || 'Concluído');
         setFocusLevel(initialData.focus_level || 'Alto');
@@ -45,7 +51,7 @@ export default function ManualSessionModal({ isOpen, onClose, onSave, initialDat
         setTopic('');
         setStudyType('Aula');
         setGoal('');
-        setDate(new Date().toISOString().split('T')[0]);
+        setDate(getLocalToday());
         setDurationMinutes('');
         setGoalStatus('Concluído');
         setFocusLevel('Alto');

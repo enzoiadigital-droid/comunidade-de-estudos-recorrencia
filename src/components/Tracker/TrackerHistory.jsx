@@ -85,6 +85,8 @@ function ViewDetailsModal({ session, onClose }) {
 
 export default function TrackerHistory({
   sessions,
+  selectedDate,
+  onClearDate,
   loading,
   onEdit,
   onDelete,
@@ -97,6 +99,7 @@ export default function TrackerHistory({
   const [viewSession, setViewSession] = useState(null);
 
   const filtered = sessions.filter(s => {
+    if (selectedDate && s.session_date !== selectedDate) return false;
     if (search && !s.subject.toLowerCase().includes(search.toLowerCase()) && 
         !(s.topic || '').toLowerCase().includes(search.toLowerCase())) return false;
     if (filterType && s.study_type !== filterType) return false;
@@ -125,6 +128,16 @@ export default function TrackerHistory({
       <div className={styles.header}>
         <h2>Histórico de Sessões</h2>
       </div>
+
+      {/* Date Filter Alert */}
+      {selectedDate && (
+        <div className={styles.dateFilterAlert}>
+          <span>Mostrando sessões do dia {formatDate(selectedDate)}</span>
+          <button onClick={onClearDate} className={styles.clearDateBtn}>
+            Ver todas as sessões
+          </button>
+        </div>
+      )}
 
       {/* Filtros */}
       <div className={styles.filters}>

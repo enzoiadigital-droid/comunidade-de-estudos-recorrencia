@@ -19,6 +19,38 @@
   margin: 0;
 }
 
+/* Date Filter Alert */
+.dateFilterAlert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--color-gold);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-text);
+  font-size: 0.95rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.clearDateBtn {
+  background: var(--color-gold);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.clearDateBtn:hover {
+  opacity: 0.9;
+}
+
 /* Filters */
 .filters {
   display: flex;

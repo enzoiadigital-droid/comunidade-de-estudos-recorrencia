@@ -5,6 +5,7 @@ import styles from './TrackerEstudos.module.css';
 
 import TrackerSummary from '../components/Tracker/TrackerSummary';
 import TrackerTimer from '../components/Tracker/TrackerTimer';
+import TrackerCalendar from '../components/Tracker/TrackerCalendar';
 import TrackerHistory from '../components/Tracker/TrackerHistory';
 
 import GoalConfigModal from '../components/Tracker/modals/GoalConfigModal';
@@ -13,33 +14,39 @@ import FinishSessionModal from '../components/Tracker/modals/FinishSessionModal'
 import ManualSessionModal from '../components/Tracker/modals/ManualSessionModal';
 
 // ─── Helpers ───────────────────────────────────────────────────────────
+function getLocalISODate(date = new Date()) {
+  const tzOffset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - tzOffset).toISOString().split('T')[0];
+}
+
 function getWeekStart() {
   const d = new Date();
   const day = d.getDay(); // 0=Sun
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
   const monday = new Date(d.setDate(diff));
-  monday.setHours(0, 0, 0, 0);
-  return monday.toISOString();
+  return getLocalISODate(monday);
 }
 
 function getToday() {
-  return new Date().toISOString().split('T')[0];
+  return getLocalISODate();
 }
 
 function calcStreak(sessions) {
   if (!sessions || sessions.length === 0) return 0;
   const uniqueDays = [...new Set(sessions.map(s => s.session_date))].sort().reverse();
   let streak = 0;
-  let cursor = new Date();
-  cursor.setHours(0, 0, 0, 0);
+  let cursorStr = getToday();
 
   for (const dayStr of uniqueDays) {
-    const day = new Date(dayStr + 'T00:00:00');
+    // Usando meio-dia para evitar problemas de horário de verão
+    const cursor = new Date(cursorStr + 'T12:00:00');
+    const day = new Date(dayStr + 'T12:00:00');
     const diff = Math.round((cursor - day) / (1000 * 60 * 60 * 24));
-    if (diff <= 1) {
+    
+    if (diff === 0 || diff === 1) {
       streak++;
-      cursor = day;
-    } else {
+      cursorStr = dayStr;
+    } else if (diff > 1) {
       break;
     }
   }
@@ -53,6 +60,7 @@ export default function TrackerEstudos() {
   // Data
   const [activeSession, setActiveSession] = useState(null);
   const [sessions, setSessions] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [goalHours, setGoalHours] = useState(10);
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(true);
@@ -122,7 +130,7 @@ export default function TrackerEstudos() {
         .reduce((sum, s) => sum + (s.duration_minutes || 0), 0);
 
       const weekMins = completed
-        .filter(s => new Date(s.session_date + 'T00:00:00') >= new Date(weekStart))
+        .filter(s => s.session_date >= weekStart)
         .reduce((sum, s) => sum + (s.duration_minutes || 0), 0);
 
       setTimeToday(todayMins);
@@ -372,9 +380,18 @@ export default function TrackerEstudos() {
         onCancelRequest={handleCancelRequest}
       />
 
+      {/* Calendar */}
+      <TrackerCalendar 
+        sessions={sessions}
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}
+      />
+
       {/* History */}
       <TrackerHistory
         sessions={sessions}
+        selectedDate={selectedDate}
+        onClearDate={() => setSelectedDate(null)}
         loading={historyLoading}
         onEdit={handleEdit}
         onDelete={handleDelete}
