@@ -109,7 +109,7 @@ export default function ManualSessionModal({ isOpen, onClose, onSave, initialDat
         <div style={{ display: 'flex', gap: '1rem' }}>
           <div style={{ flex: 1 }}>
             <label style={{ display: 'block', color: 'var(--color-text)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Data *</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'rgba(0,0,0,0.2)', color: 'var(--color-text)' }} />
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'rgba(0,0,0,0.2)', color: 'var(--color-text)', colorScheme: 'dark' }} />
           </div>
           <div style={{ flex: 1 }}>
             <label style={{ display: 'block', color: 'var(--color-text)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Duração (min) *</label>
@@ -147,9 +147,9 @@ export default function ManualSessionModal({ isOpen, onClose, onSave, initialDat
           <div>
             <label style={{ display: 'block', color: 'var(--color-text)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Status do Objetivo</label>
             <select value={goalStatus} onChange={(e) => setGoalStatus(e.target.value)} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'rgba(0,0,0,0.2)', color: 'var(--color-text)' }}>
-              <option value="Concluído">Concluído</option>
-              <option value="Parcialmente concluído">Parcialmente concluído</option>
-              <option value="Não concluído">Não concluído</option>
+              <option value="Concluído" style={{background: '#1a2234'}}>Concluído</option>
+              <option value="Parcialmente concluído" style={{background: '#1a2234'}}>Parcialmente concluído</option>
+              <option value="Não concluído" style={{background: '#1a2234'}}>Não concluído</option>
             </select>
           </div>
         )}

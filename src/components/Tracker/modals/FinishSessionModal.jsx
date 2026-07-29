@@ -68,9 +68,9 @@ export default function FinishSessionModal({ isOpen, onClose, onFinish, sessionD
               onChange={(e) => setGoalStatus(e.target.value)}
               style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-border)', background: 'rgba(0,0,0,0.2)', color: 'var(--color-text)' }}
             >
-              <option value="Concluído">Concluído</option>
-              <option value="Parcialmente concluído">Parcialmente concluído</option>
-              <option value="Não concluído">Não concluído</option>
+              <option value="Concluído" style={{background: '#1a2234'}}>Concluído</option>
+              <option value="Parcialmente concluído" style={{background: '#1a2234'}}>Parcialmente concluído</option>
+              <option value="Não concluído" style={{background: '#1a2234'}}>Não concluído</option>
             </select>
           </div>
         )}
