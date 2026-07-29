@@ -206,7 +206,9 @@
 }
 
 .monthDay {
-  aspect-ratio: 1;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  margin: 0;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.03);
   border-radius: 8px;
@@ -275,6 +277,10 @@
 
 /* Responsive */
 @media (max-width: 640px) {
+  .container {
+    padding: 1.25rem 0.75rem;
+  }
+
   .header {
     flex-direction: column;
     align-items: stretch;
@@ -285,15 +291,23 @@
   }
   
   .weekGrid {
-    gap: 0.35rem;
+    gap: 0.25rem;
   }
   
   .dayCard {
     padding: 0.75rem 0.25rem;
   }
+
+  .monthGrid {
+    gap: 0.25rem;
+  }
+
+  .monthDay {
+    padding: 0.25rem;
+  }
   
   .dayTime {
-    display: none; /* Hide time text on mobile week view, maybe replace with a dot if requested, but user said "tempo total", let's keep it very small */
+    display: none;
   }
   
   .dayCard::after {
@@ -316,6 +330,6 @@
   }
   
   .monthDayTime {
-    display: none; /* Hide text on mobile, rely on dot */
+    display: none;
   }
 }
