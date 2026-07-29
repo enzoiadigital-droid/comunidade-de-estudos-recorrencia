@@ -136,13 +136,13 @@ export default function TrackerHistory({
           className={styles.searchInput}
         />
         <select value={filterType} onChange={e => { setFilterType(e.target.value); setPage(1); }} className={styles.filterSelect}>
-          <option value="">Todos os tipos</option>
-          {studyTypes.map(t => <option key={t} value={t}>{t}</option>)}
+          <option value="" style={{background: '#1a2234'}}>Todos os tipos</option>
+          {studyTypes.map(t => <option key={t} value={t} style={{background: '#1a2234'}}>{t}</option>)}
         </select>
         <select value={filterPeriod} onChange={e => { setFilterPeriod(e.target.value); setPage(1); }} className={styles.filterSelect}>
-          <option value="">Todo período</option>
-          <option value="7d">Últimos 7 dias</option>
-          <option value="30d">Últimos 30 dias</option>
+          <option value="" style={{background: '#1a2234'}}>Todo período</option>
+          <option value="7d" style={{background: '#1a2234'}}>Últimos 7 dias</option>
+          <option value="30d" style={{background: '#1a2234'}}>Últimos 30 dias</option>
         </select>
         {(search || filterType || filterPeriod) && (
           <button className={styles.clearBtn} onClick={() => { setSearch(''); setFilterType(''); setFilterPeriod(''); setPage(1); }}>
