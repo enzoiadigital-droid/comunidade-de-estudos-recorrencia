@@ -94,6 +94,7 @@
 /* Main Content Area */
 .mainContent {
   flex: 1;
+  min-width: 0; /* IMPEDIR QUE O MAINCONTENT SE EXPANDA ALÉM DA TELA NO MOBILE */
   margin-left: 240px; /* Igual a largura da sidebar */
   min-height: 100vh;
   padding-bottom: 2rem;
