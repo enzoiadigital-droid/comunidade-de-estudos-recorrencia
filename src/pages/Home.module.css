@@ -65,6 +65,7 @@
   }
   .heroContent p {
     font-size: 0.95rem;
+    max-width: 260px; /* Força a quebra após "aprovação" */
   }
 }
 
@@ -150,6 +151,8 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .card:hover .cardImage {
