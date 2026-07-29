@@ -65,7 +65,7 @@
   }
   .heroContent p {
     font-size: 0.95rem;
-    max-width: 260px; /* Força a quebra após "aprovação" */
+    max-width: 200px; /* Força a quebra garantida após "aprovação" até em telas muito pequenas */
   }
 }
 
