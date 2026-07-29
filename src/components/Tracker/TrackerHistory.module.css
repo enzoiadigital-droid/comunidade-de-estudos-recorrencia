@@ -1,0 +1,346 @@
+.container {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.header h2 {
+  color: var(--color-text);
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-left: 4px solid var(--color-gold);
+  padding-left: 0.75rem;
+  margin: 0;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.searchInput,
+.filterSelect {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filterSelect {
+  min-width: 150px;
+}
+
+.searchInput:focus,
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.clearBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-gold);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+}
+.clearBtn:hover { background: rgba(212, 175, 55, 0.08); }
+
+/* List */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.2s;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.itemLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTop {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.itemSubject {
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.itemType {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--color-gold);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.itemTopic {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.itemMeta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  align-items: center;
+}
+
+.itemMeta span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Result Badge */
+.resultBadge {
+  display: inline-block;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  color: var(--color-text-muted);
+  margin-top: 0.15rem;
+  align-self: flex-start;
+}
+
+.resultDone { background: rgba(34,197,94,0.1); color: #22c55e; }
+.resultPartial { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.resultFail { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+/* Session menu */
+.menuWrapper {
+  position: relative;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.menuBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.menuBtn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--color-text);
+}
+
+.menuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: 110%;
+  background: #1a2234;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.4rem;
+  z-index: 50;
+  min-width: 170px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.88rem;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.menu button:hover { background: rgba(255,255,255,0.06); }
+
+.menuDeleteBtn {
+  color: #ef4444 !important;
+}
+
+.menuDeleteBtn:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Empty */
+.empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.emptyHint {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* Skeleton */
+.skeletonList { display: flex; flex-direction: column; gap: 0.75rem; }
+.skeleton {
+  height: 80px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Load more */
+.loadMoreBtn {
+  display: block;
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 0.75rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.loadMoreBtn:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--color-text);
+}
+
+/* Details Modal */
+.detailsOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.detailsModal {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 480px;
+  width: 100%;
+}
+
+.detailsModal h3 {
+  color: var(--color-text);
+  font-size: 1.2rem;
+  margin: 0 0 1.25rem;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.detailGrid span:nth-child(odd) {
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.detailGrid span:nth-child(even) {
+  color: var(--color-text);
+  font-size: 0.88rem;
+}
+
+.detailsClose {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: var(--color-text);
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .searchInput { min-width: unset; }
+}

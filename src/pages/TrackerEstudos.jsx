@@ -1,236 +1,417 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import { Play, Pause, Square, Plus, BarChart2, Calendar, Target, Clock } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import styles from './TrackerEstudos.module.css';
 
+import TrackerSummary from '../components/Tracker/TrackerSummary';
+import TrackerTimer from '../components/Tracker/TrackerTimer';
+import TrackerHistory from '../components/Tracker/TrackerHistory';
+
+import GoalConfigModal from '../components/Tracker/modals/GoalConfigModal';
+import StartSessionModal from '../components/Tracker/modals/StartSessionModal';
+import FinishSessionModal from '../components/Tracker/modals/FinishSessionModal';
+import ManualSessionModal from '../components/Tracker/modals/ManualSessionModal';
+
+// ─── Helpers ───────────────────────────────────────────────────────────
+function getWeekStart() {
+  const d = new Date();
+  const day = d.getDay(); // 0=Sun
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(d.setDate(diff));
+  monday.setHours(0, 0, 0, 0);
+  return monday.toISOString();
+}
+
+function getToday() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function calcStreak(sessions) {
+  if (!sessions || sessions.length === 0) return 0;
+  const uniqueDays = [...new Set(sessions.map(s => s.session_date))].sort().reverse();
+  let streak = 0;
+  let cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+
+  for (const dayStr of uniqueDays) {
+    const day = new Date(dayStr + 'T00:00:00');
+    const diff = Math.round((cursor - day) / (1000 * 60 * 60 * 24));
+    if (diff <= 1) {
+      streak++;
+      cursor = day;
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+// ─── Component ─────────────────────────────────────────────────────────
 export default function TrackerEstudos() {
   const { session } = useAuth();
+
+  // Data
+  const [activeSession, setActiveSession] = useState(null);
   const [sessions, setSessions] = useState([]);
-  const [goals, setGoals] = useState(null);
+  const [goalHours, setGoalHours] = useState(10);
   const [loading, setLoading] = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(true);
 
-  // Timer state
-  const [timerActive, setTimerActive] = useState(false);
-  const [timerSeconds, setTimerSeconds] = useState(0);
-  const [currentSession, setCurrentSession] = useState(null);
+  // Stats
+  const [timeToday, setTimeToday] = useState(0); // in minutes
+  const [timeThisWeek, setTimeThisWeek] = useState(0); // in minutes
+  const [streak, setStreak] = useState(0);
 
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchData();
+  // Modals
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showStartModal, setShowStartModal] = useState(false);
+  const [showFinishModal, setShowFinishModal] = useState(false);
+  const [showManualModal, setShowManualModal] = useState(false);
+  const [editSession, setEditSession] = useState(null);
+
+  // Toast
+  const [toast, setToast] = useState(null);
+
+  const showToast = (msg, type = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  // ─── Fetch all data ───────────────────────────────────────────────────
+  const fetchData = useCallback(async () => {
+    if (!session?.user?.id) return;
+
+    try {
+      // 1. Fetch goal
+      const { data: goalData } = await supabase
+        .from('study_goals')
+        .select('weekly_goal_hours')
+        .eq('user_id', session.user.id)
+        .single();
+      if (goalData) setGoalHours(Number(goalData.weekly_goal_hours));
+
+      // 2. Fetch active session (running or paused)
+      const { data: activeSess } = await supabase
+        .from('study_sessions')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .in('status', ['running', 'paused'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      setActiveSession(activeSess || null);
+
+      // 3. Fetch completed sessions for history + stats
+      const { data: allSessions } = await supabase
+        .from('study_sessions')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .eq('status', 'completed')
+        .order('session_date', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      const completed = allSessions || [];
+      setSessions(completed);
+
+      // Stats
+      const today = getToday();
+      const weekStart = getWeekStart();
+
+      const todayMins = completed
+        .filter(s => s.session_date === today)
+        .reduce((sum, s) => sum + (s.duration_minutes || 0), 0);
+
+      const weekMins = completed
+        .filter(s => new Date(s.session_date + 'T00:00:00') >= new Date(weekStart))
+        .reduce((sum, s) => sum + (s.duration_minutes || 0), 0);
+
+      setTimeToday(todayMins);
+      setTimeThisWeek(weekMins);
+      setStreak(calcStreak(completed));
+    } finally {
+      setLoading(false);
+      setHistoryLoading(false);
     }
   }, [session]);
 
   useEffect(() => {
-    let interval = null;
-    if (timerActive) {
-      interval = setInterval(() => {
-        setTimerSeconds(s => s + 1);
-      }, 1000);
-    } else if (!timerActive && timerSeconds !== 0) {
-      clearInterval(interval);
-    }
-    return () => clearInterval(interval);
-  }, [timerActive, timerSeconds]);
+    fetchData();
+  }, [fetchData]);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      // Fetch goals
-      const { data: goalData, error: goalError } = await supabase
-        .from('study_goals')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .single();
-      
-      if (!goalError && goalData) {
-        setGoals(goalData);
-      }
+  // ─── Timer: Start ─────────────────────────────────────────────────────
+  const handleStart = async ({ subject, topic, studyType, goal }) => {
+    setShowStartModal(false);
+    const now = new Date().toISOString();
+    const { data, error } = await supabase
+      .from('study_sessions')
+      .insert({
+        user_id: session.user.id,
+        subject,
+        topic,
+        study_type: studyType,
+        goal,
+        status: 'running',
+        accumulated_seconds: 0,
+        last_started_at: now,
+        session_date: getToday(),
+        duration_minutes: 0,
+      })
+      .select()
+      .single();
 
-      // Fetch sessions (last 30 days)
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      
-      const { data: sessionData, error: sessionError } = await supabase
-        .from('study_sessions')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .gte('created_at', thirtyDaysAgo.toISOString())
-        .order('created_at', { ascending: false });
-
-      if (!sessionError && sessionData) {
-        setSessions(sessionData);
-      }
-    } catch (err) {
-      console.error('Error fetching tracker data:', err);
-    } finally {
-      setLoading(false);
+    if (!error && data) {
+      setActiveSession(data);
+    } else {
+      showToast('Erro ao iniciar sessão.', 'error');
     }
   };
 
-  const formatTime = (totalSeconds) => {
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  // ─── Timer: Pause ─────────────────────────────────────────────────────
+  const handlePause = async () => {
+    if (!activeSession) return;
+    const now = new Date();
+    const elapsed = activeSession.last_started_at
+      ? Math.floor((now - new Date(activeSession.last_started_at)) / 1000)
+      : 0;
+    const newAccumulated = (activeSession.accumulated_seconds || 0) + elapsed;
+
+    const { data, error } = await supabase
+      .from('study_sessions')
+      .update({ status: 'paused', accumulated_seconds: newAccumulated, last_started_at: null })
+      .eq('id', activeSession.id)
+      .select()
+      .single();
+
+    if (!error && data) setActiveSession(data);
   };
 
-  const handleStartTimer = () => {
-    if (!currentSession) {
-      // In a real app, open modal to select subject first
-      setCurrentSession({ subject: 'Geral', type: 'Teoria' });
+  // ─── Timer: Resume ────────────────────────────────────────────────────
+  const handleResume = async () => {
+    if (!activeSession) return;
+    const now = new Date().toISOString();
+    const { data, error } = await supabase
+      .from('study_sessions')
+      .update({ status: 'running', last_started_at: now })
+      .eq('id', activeSession.id)
+      .select()
+      .single();
+
+    if (!error && data) setActiveSession(data);
+  };
+
+  // ─── Timer: Finish (open modal) ───────────────────────────────────────
+  const handleFinishRequest = () => setShowFinishModal(true);
+
+  const handleFinishConfirm = async (finishData) => {
+    if (!activeSession) return;
+    setShowFinishModal(false);
+
+    // Calculate final duration
+    let totalSeconds = activeSession.accumulated_seconds || 0;
+    if (activeSession.status === 'running' && activeSession.last_started_at) {
+      totalSeconds += Math.floor((Date.now() - new Date(activeSession.last_started_at)) / 1000);
     }
-    setTimerActive(true);
-  };
+    const durationMinutes = Math.max(1, Math.round(totalSeconds / 60));
 
-  const handlePauseTimer = () => {
-    setTimerActive(false);
-  };
+    const { error } = await supabase
+      .from('study_sessions')
+      .update({
+        status: 'completed',
+        duration_minutes: durationMinutes,
+        goal_status: finishData.goalStatus,
+        focus_level: finishData.focusLevel,
+        notes: finishData.notes || null,
+        questions_total: finishData.questionsTotal ?? null,
+        questions_correct: finishData.questionsCorrect ?? null,
+        questions_wrong: finishData.questionsWrong ?? null,
+        accuracy_rate: finishData.accuracyRate ?? null,
+        end_time: new Date().toISOString(),
+        last_started_at: null,
+      })
+      .eq('id', activeSession.id);
 
-  const handleStopTimer = async () => {
-    setTimerActive(false);
-    
-    // Save session
-    if (timerSeconds > 60) {
-      try {
-        const newSession = {
-          user_id: session.user.id,
-          subject: currentSession?.subject || 'Geral',
-          study_type: currentSession?.type || 'Teoria',
-          duration_minutes: Math.round(timerSeconds / 60),
-          session_date: new Date().toISOString().split('T')[0]
-        };
-
-        const { error } = await supabase.from('study_sessions').insert([newSession]);
-        if (!error) {
-          fetchData(); // Refresh data
-        }
-      } catch (err) {
-        console.error('Failed to save session', err);
-      }
+    if (!error) {
+      setActiveSession(null);
+      showToast('Sessão finalizada e salva!');
+      fetchData();
+    } else {
+      showToast('Erro ao finalizar sessão.', 'error');
     }
-    
-    // Reset timer
-    setTimerSeconds(0);
-    setCurrentSession(null);
   };
 
-  const timeToday = sessions
-    .filter(s => s.session_date === new Date().toISOString().split('T')[0])
-    .reduce((acc, s) => acc + s.duration_minutes, 0);
+  // ─── Timer: Cancel ────────────────────────────────────────────────────
+  const handleCancelRequest = async () => {
+    if (!activeSession) return;
+    if (!window.confirm('Tem certeza que deseja cancelar a sessão? O progresso não será salvo.')) return;
 
-  const timeThisWeek = sessions.reduce((acc, s) => acc + s.duration_minutes, 0); // Simplified for demo
-  const goalHours = goals?.weekly_goal_hours || 10;
-  const progressPercent = Math.min(100, Math.round((timeThisWeek / 60) / goalHours * 100));
+    const { error } = await supabase
+      .from('study_sessions')
+      .delete()
+      .eq('id', activeSession.id);
 
+    if (!error) {
+      setActiveSession(null);
+      showToast('Sessão cancelada.', 'info');
+    }
+  };
+
+  // ─── Manual session ───────────────────────────────────────────────────
+  const handleManualSave = async (data) => {
+    setShowManualModal(false);
+    setEditSession(null);
+
+    const payload = {
+      user_id: session.user.id,
+      subject: data.subject,
+      topic: data.topic || null,
+      study_type: data.studyType,
+      goal: data.goal || null,
+      session_date: data.date,
+      duration_minutes: data.durationMinutes,
+      goal_status: data.goalStatus || null,
+      focus_level: data.focusLevel || null,
+      notes: data.notes || null,
+      questions_total: data.questionsTotal ?? null,
+      questions_correct: data.questionsCorrect ?? null,
+      questions_wrong: data.questionsWrong ?? null,
+      accuracy_rate: data.accuracyRate ?? null,
+      is_manual: true,
+      status: 'completed',
+    };
+
+    let error;
+    if (data.id) {
+      ({ error } = await supabase.from('study_sessions').update(payload).eq('id', data.id));
+    } else {
+      ({ error } = await supabase.from('study_sessions').insert(payload));
+    }
+
+    if (!error) {
+      showToast(data.id ? 'Sessão atualizada!' : 'Sessão registrada!');
+      fetchData();
+    } else {
+      showToast('Erro ao salvar sessão.', 'error');
+    }
+  };
+
+  // ─── Edit ─────────────────────────────────────────────────────────────
+  const handleEdit = (sess) => {
+    setEditSession(sess);
+    setShowManualModal(true);
+  };
+
+  // ─── Delete ───────────────────────────────────────────────────────────
+  const handleDelete = async (sess) => {
+    if (!window.confirm(`Excluir a sessão de "${sess.subject}"? Esta ação não pode ser desfeita.`)) return;
+    const { error } = await supabase.from('study_sessions').delete().eq('id', sess.id);
+    if (!error) {
+      showToast('Sessão excluída.');
+      fetchData();
+    } else {
+      showToast('Erro ao excluir.', 'error');
+    }
+  };
+
+  // ─── Repeat ───────────────────────────────────────────────────────────
+  const handleRepeat = (sess) => {
+    // Pre-fill start modal with session data — we open start modal with preset values
+    // We'll open ManualModal with only the metadata pre-filled, without date/duration
+    setEditSession({ 
+      subject: sess.subject, 
+      topic: sess.topic, 
+      study_type: sess.study_type, 
+      goal: sess.goal,
+      id: null // force as new session
+    });
+    setShowManualModal(true);
+  };
+
+  // ─── Render ───────────────────────────────────────────────────────────
   if (loading) {
-    return <div className={styles.container}>Carregando dados...</div>;
+    return (
+      <div className={styles.page}>
+        <div className={styles.loadingState}>
+          <div className={styles.spinner}></div>
+          <p>Carregando Tracker...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
+    <div className={styles.page}>
+      {/* Toast */}
+      {toast && (
+        <div className={`${styles.toast} ${styles[`toast_${toast.type}`]}`}>
+          {toast.msg}
+        </div>
+      )}
+
+      <div className={styles.header}>
         <h1>Tracker de Estudos</h1>
-        <p>Acompanhe seu progresso, registre suas sessões e bata suas metas semanais.</p>
-      </header>
-
-      {/* Resumo Section */}
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}><Clock size={24} /></div>
-          <div className={styles.statInfo}>
-            <span className={styles.statLabel}>Estudado Hoje</span>
-            <span className={styles.statValue}>{Math.floor(timeToday / 60)}h {timeToday % 60}m</span>
-          </div>
-        </div>
-        
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}><BarChart2 size={24} /></div>
-          <div className={styles.statInfo}>
-            <span className={styles.statLabel}>Estudado na Semana</span>
-            <span className={styles.statValue}>{Math.floor(timeThisWeek / 60)}h {timeThisWeek % 60}m</span>
-          </div>
-        </div>
-
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}><Target size={24} /></div>
-          <div className={styles.statInfo}>
-            <span className={styles.statLabel}>Meta Semanal</span>
-            <span className={styles.statValue}>{goalHours}h</span>
-          </div>
-        </div>
+        <p>Registre e acompanhe cada sessão de estudo.</p>
       </div>
 
-      {/* Progress Bar */}
-      <div className={styles.progressContainer}>
-        <div className={styles.progressHeader}>
-          <span>Progresso da Semana</span>
-          <span>{progressPercent}%</span>
-        </div>
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} style={{ width: `${progressPercent}%` }}></div>
-        </div>
-      </div>
+      {/* Summary */}
+      <TrackerSummary
+        timeToday={timeToday}
+        timeThisWeek={timeThisWeek}
+        goalHours={goalHours}
+        streak={streak}
+        onOpenConfig={() => setShowGoalModal(true)}
+      />
 
-      <div className={styles.mainGrid}>
-        {/* Timer Section */}
-        <section className={styles.timerSection}>
-          <h2>Cronômetro</h2>
-          <div className={styles.timerDisplay}>
-            {formatTime(timerSeconds)}
-          </div>
-          <div className={styles.timerControls}>
-            {!timerActive ? (
-              <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleStartTimer}>
-                <Play size={20} /> Iniciar Sessão
-              </button>
-            ) : (
-              <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handlePauseTimer}>
-                <Pause size={20} /> Pausar
-              </button>
-            )}
-            <button 
-              className={`${styles.btn} ${styles.btnDanger}`} 
-              onClick={handleStopTimer}
-              disabled={timerSeconds === 0 && !timerActive}
-            >
-              <Square size={20} /> Parar & Salvar
-            </button>
-          </div>
-        </section>
+      {/* Timer */}
+      <TrackerTimer
+        activeSession={activeSession}
+        onStartRequest={() => setShowStartModal(true)}
+        onManualRequest={() => { setEditSession(null); setShowManualModal(true); }}
+        onPause={handlePause}
+        onResume={handleResume}
+        onFinishRequest={handleFinishRequest}
+        onCancelRequest={handleCancelRequest}
+      />
 
-        {/* Historico Section */}
-        <section className={styles.historySection}>
-          <div className={styles.historyHeader}>
-            <h2>Sessões Recentes</h2>
-            <button className={styles.btnText}>
-              <Plus size={16} /> Registro Manual
-            </button>
-          </div>
-          
-          {sessions.length === 0 ? (
-            <div className={styles.emptyState}>
-              <Calendar size={32} />
-              <p>Nenhuma sessão registrada recentemente.</p>
-            </div>
-          ) : (
-            <ul className={styles.sessionList}>
-              {sessions.slice(0, 5).map(session => (
-                <li key={session.id} className={styles.sessionItem}>
-                  <div className={styles.sessionMeta}>
-                    <strong>{session.subject}</strong>
-                    <span>{session.study_type}</span>
-                  </div>
-                  <div className={styles.sessionTime}>
-                    <span>{session.duration_minutes} min</span>
-                    <span className={styles.sessionDate}>{new Date(session.created_at).toLocaleDateString()}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </div>
+      {/* History */}
+      <TrackerHistory
+        sessions={sessions}
+        loading={historyLoading}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onRepeat={handleRepeat}
+      />
+
+      {/* Modals */}
+      <GoalConfigModal
+        isOpen={showGoalModal}
+        onClose={() => setShowGoalModal(false)}
+        currentGoal={goalHours}
+        onGoalUpdated={(h) => { setGoalHours(h); showToast('Meta atualizada!'); }}
+        session={session}
+      />
+
+      <StartSessionModal
+        isOpen={showStartModal}
+        onClose={() => setShowStartModal(false)}
+        onStart={handleStart}
+      />
+
+      <FinishSessionModal
+        isOpen={showFinishModal}
+        onClose={() => setShowFinishModal(false)}
+        onFinish={handleFinishConfirm}
+        sessionData={activeSession ? {
+          goal: activeSession.goal,
+          studyType: activeSession.study_type
+        } : null}
+      />
+
+      <ManualSessionModal
+        isOpen={showManualModal}
+        onClose={() => { setShowManualModal(false); setEditSession(null); }}
+        onSave={handleManualSave}
+        initialData={editSession}
+      />
     </div>
   );
 }

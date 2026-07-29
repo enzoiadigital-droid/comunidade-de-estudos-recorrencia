@@ -1,0 +1,199 @@
+.card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Estado Idle */
+.timerIdle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.idleIcon {
+  color: var(--color-gold);
+  opacity: 0.5;
+}
+
+.idleText {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.idleActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Estado Ativo - Info da sessão */
+.sessionInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.sessionTag {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--color-gold);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.sessionDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.sessionSubject {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.sessionMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+/* Timer Display */
+.timerDisplay {
+  font-size: 5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-gold);
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+  margin-bottom: 0.5rem;
+  line-height: 1;
+  transition: opacity 0.3s ease;
+}
+
+.timerPaused {
+  opacity: 0.5;
+}
+
+.pausedLabel {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0 0 1.5rem;
+}
+
+/* Controles */
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+/* Botões compartilhados */
+.btnPrimary,
+.btnSecondary,
+.btnControl,
+.btnFinish,
+.btnCancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnPrimary {
+  background: var(--color-gold);
+  color: #000;
+  font-size: 1.05rem;
+  padding: 0.875rem 2rem;
+}
+
+.btnPrimary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+}
+
+.btnSecondary {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btnControl {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btnControl:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btnFinish {
+  background: var(--color-gold);
+  color: #000;
+}
+
+.btnFinish:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btnCancel {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.btnCancel:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+@media (max-width: 640px) {
+  .timerDisplay {
+    font-size: 3.5rem;
+  }
+  .btnPrimary, .btnSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+  .controls {
+    flex-direction: column;
+  }
+  .btnControl, .btnFinish, .btnCancel {
+    width: 100%;
+    justify-content: center;
+  }
+}
