@@ -95,6 +95,8 @@
   scrollbar-width: none;
   cursor: grab;
   -webkit-overflow-scrolling: touch;
+  /* Permite gesto horizontal nativo no mobile */
+  touch-action: pan-x;
 }
 
 .carouselWrapper:active {

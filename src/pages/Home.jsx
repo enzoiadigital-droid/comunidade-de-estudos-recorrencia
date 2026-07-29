@@ -17,40 +17,44 @@ export default function Home() {
   const { session, isSubscriber, isAdmin } = useAuth();
 
   const carouselRefs = useRef({});
-  const [isDragging, setIsDragging] = useState(false);
+  const isDraggingRef = useRef(false);
   const [dragMoved, setDragMoved] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
+
+  // Detecta se é dispositivo touch
+  const isTouchDevice = () => window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
   const handleMouseDown = (e, id) => {
-    setIsDragging(true);
+    if (isTouchDevice()) return; // No mobile, deixa o scroll nativo funcionar
+    isDraggingRef.current = true;
     setDragMoved(false);
     const carousel = carouselRefs.current[id];
     if (carousel) {
-      setStartX(e.pageX - carousel.offsetLeft);
-      setScrollLeft(carousel.scrollLeft);
+      startXRef.current = e.pageX - carousel.offsetLeft;
+      scrollLeftRef.current = carousel.scrollLeft;
     }
   };
 
   const handleMouseLeave = () => {
-    setIsDragging(false);
+    isDraggingRef.current = false;
   };
 
   const handleMouseUp = () => {
-    setIsDragging(false);
+    isDraggingRef.current = false;
   };
 
   const handleMouseMove = (e, id) => {
-    if (!isDragging) return;
-    e.preventDefault();
+    if (!isDraggingRef.current || isTouchDevice()) return;
+    // NÃO chama preventDefault aqui para não bloquear eventos nativos
     const carousel = carouselRefs.current[id];
     if (carousel) {
       const x = e.pageX - carousel.offsetLeft;
-      const walk = (x - startX) * 2;
+      const walk = (x - startXRef.current) * 2;
       if (Math.abs(walk) > 5) {
         setDragMoved(true);
       }
-      carousel.scrollLeft = scrollLeft - walk;
+      carousel.scrollLeft = scrollLeftRef.current - walk;
     }
   };
 
