@@ -110,13 +110,7 @@
   
   .carousel {
     padding-left: 2rem;
-  }
-  
-  .carousel::after {
-    content: '';
-    display: block;
-    width: 2rem;
-    flex-shrink: 0;
+    padding-right: 2rem;
   }
 }
 
@@ -129,8 +123,11 @@
 }
 
 .carousel {
-  display: inline-flex;
+  display: flex;
+  width: max-content;
+  min-width: 100%;
   gap: 1.25rem;
+  box-sizing: border-box;
 }
 
 .card {

@@ -22,34 +22,32 @@ export default function Home() {
   const startXRef = useRef(0);
   const scrollLeftRef = useRef(0);
 
-  // Detecta se é dispositivo touch
-  const isTouchDevice = () => window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-
-  const handleMouseDown = (e, id) => {
-    if (isTouchDevice()) return; // No mobile, deixa o scroll nativo funcionar
+  const handlePointerDown = (e, id) => {
+    if (e.pointerType === 'touch') return;
     isDraggingRef.current = true;
     setDragMoved(false);
     const carousel = carouselRefs.current[id];
     if (carousel) {
-      startXRef.current = e.pageX - carousel.offsetLeft;
+      startXRef.current = e.clientX - carousel.offsetLeft;
       scrollLeftRef.current = carousel.scrollLeft;
     }
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = (e) => {
+    if (e.pointerType === 'touch') return;
     isDraggingRef.current = false;
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = (e) => {
+    if (e.pointerType === 'touch') return;
     isDraggingRef.current = false;
   };
 
-  const handleMouseMove = (e, id) => {
-    if (!isDraggingRef.current || isTouchDevice()) return;
-    // NÃO chama preventDefault aqui para não bloquear eventos nativos
+  const handlePointerMove = (e, id) => {
+    if (!isDraggingRef.current || e.pointerType === 'touch') return;
     const carousel = carouselRefs.current[id];
     if (carousel) {
-      const x = e.pageX - carousel.offsetLeft;
+      const x = e.clientX - carousel.offsetLeft;
       const walk = (x - startXRef.current) * 2;
       if (Math.abs(walk) > 5) {
         setDragMoved(true);
@@ -177,10 +175,10 @@ export default function Home() {
               <div 
                 className={styles.carouselWrapper}
                 ref={el => carouselRefs.current[category.id] = el}
-                onMouseDown={(e) => handleMouseDown(e, category.id)}
-                onMouseLeave={handleMouseLeave}
-                onMouseUp={handleMouseUp}
-                onMouseMove={(e) => handleMouseMove(e, category.id)}
+                onPointerDown={(e) => handlePointerDown(e, category.id)}
+                onPointerLeave={handlePointerLeave}
+                onPointerUp={handlePointerUp}
+                onPointerMove={(e) => handlePointerMove(e, category.id)}
               >
                 <div className={styles.carousel}>
                   {category.lessons.length === 0 && (
