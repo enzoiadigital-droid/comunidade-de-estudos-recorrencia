@@ -359,4 +359,6 @@
     align-items: stretch;
   }
   .searchInput { min-width: unset; }
+  .selectWrapper { width: 100%; display: block; }
+  .filterSelect { width: 100%; min-width: unset; }
 }
