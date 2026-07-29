@@ -46,6 +46,22 @@
 
 .filterSelect {
   min-width: 150px;
+  appearance: none;
+  padding-right: 36px;
+}
+
+.selectWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.selectIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-text);
 }
 
 .searchInput:focus,

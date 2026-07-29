@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MoreVertical, Trash2, Edit2, RotateCcw, Eye, Clock, Calendar } from 'lucide-react';
+import { MoreVertical, Trash2, Edit2, RotateCcw, Eye, Clock, Calendar, ChevronDown } from 'lucide-react';
 import styles from './TrackerHistory.module.css';
 
 const PAGE_SIZE = 10;
@@ -135,15 +135,21 @@ export default function TrackerHistory({
           onChange={e => { setSearch(e.target.value); setPage(1); }}
           className={styles.searchInput}
         />
-        <select value={filterType} onChange={e => { setFilterType(e.target.value); setPage(1); }} className={styles.filterSelect}>
-          <option value="" style={{background: '#1a2234'}}>Todos os tipos</option>
-          {studyTypes.map(t => <option key={t} value={t} style={{background: '#1a2234'}}>{t}</option>)}
-        </select>
-        <select value={filterPeriod} onChange={e => { setFilterPeriod(e.target.value); setPage(1); }} className={styles.filterSelect}>
-          <option value="" style={{background: '#1a2234'}}>Todo período</option>
-          <option value="7d" style={{background: '#1a2234'}}>Últimos 7 dias</option>
-          <option value="30d" style={{background: '#1a2234'}}>Últimos 30 dias</option>
-        </select>
+        <div className={styles.selectWrapper}>
+          <select value={filterType} onChange={e => { setFilterType(e.target.value); setPage(1); }} className={styles.filterSelect}>
+            <option value="" style={{background: '#1a2234'}}>Todos os tipos</option>
+            {studyTypes.map(t => <option key={t} value={t} style={{background: '#1a2234'}}>{t}</option>)}
+          </select>
+          <ChevronDown size={16} className={styles.selectIcon} />
+        </div>
+        <div className={styles.selectWrapper}>
+          <select value={filterPeriod} onChange={e => { setFilterPeriod(e.target.value); setPage(1); }} className={styles.filterSelect}>
+            <option value="" style={{background: '#1a2234'}}>Todo período</option>
+            <option value="7d" style={{background: '#1a2234'}}>Últimos 7 dias</option>
+            <option value="30d" style={{background: '#1a2234'}}>Últimos 30 dias</option>
+          </select>
+          <ChevronDown size={16} className={styles.selectIcon} />
+        </div>
         {(search || filterType || filterPeriod) && (
           <button className={styles.clearBtn} onClick={() => { setSearch(''); setFilterType(''); setFilterPeriod(''); setPage(1); }}>
             Limpar filtros
