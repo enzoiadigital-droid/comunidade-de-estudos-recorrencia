@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, LifeBuoy, CheckCircle, User as UserIcon, Mail } from 'lucide-react';
+import { LogOut, Headset, CheckCircle, User as UserIcon, Mail } from 'lucide-react';
 import styles from './MinhaConta.module.css';
 
 export default function MinhaConta() {
@@ -85,7 +85,7 @@ export default function MinhaConta() {
 
       <div className={styles.actions}>
         <button className={styles.supportBtn} onClick={handleSupport}>
-          <LifeBuoy size={20} />
+          <Headset size={20} />
           Falar com o suporte
         </button>
         
