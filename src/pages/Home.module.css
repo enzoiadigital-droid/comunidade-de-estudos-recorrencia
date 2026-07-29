@@ -105,7 +105,18 @@
   .carouselWrapper {
     margin-left: -2rem;
     margin-right: -2rem;
-    padding: 1.5rem 2rem 2.5rem 2rem;
+    padding: 1.5rem 0 2.5rem 0;
+  }
+  
+  .carousel {
+    padding-left: 2rem;
+  }
+  
+  .carousel::after {
+    content: '';
+    display: block;
+    width: 2rem;
+    flex-shrink: 0;
   }
 }
 
@@ -118,9 +129,8 @@
 }
 
 .carousel {
-  display: flex;
+  display: inline-flex;
   gap: 1.25rem;
-  width: max-content;
 }
 
 .card {
