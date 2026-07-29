@@ -1,6 +1,7 @@
 .homeContainer {
   min-height: 100vh;
   padding-bottom: 4rem;
+  overflow-x: hidden;
 }
 
 .loading {
@@ -43,6 +44,8 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .heroContent p {
@@ -84,6 +87,8 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
   cursor: grab;
+  touch-action: pan-y;
+  overscroll-behavior-x: contain;
 }
 
 .carouselWrapper:active {

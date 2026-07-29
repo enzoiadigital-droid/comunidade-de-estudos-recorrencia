@@ -19,7 +19,6 @@ export default function AppLayout() {
 
   const navItems = [
     { label: 'Início', path: '/', icon: Home },
-    { label: 'Conteúdos', path: '/#conteudos', icon: BookOpen },
     { label: 'Tracker', path: '/tracker', icon: Clock },
     { label: 'Flashcards', path: '/flashcards', icon: Layers },
     { label: 'Progresso', path: '/progresso', icon: TrendingUp },
@@ -32,12 +31,7 @@ export default function AppLayout() {
   };
 
   const isActive = (path) => {
-    if (path === '/#conteudos') {
-      return location.pathname === '/' && location.hash === '#conteudos';
-    }
-    if (path === '/') {
-      return location.pathname === '/' && location.hash !== '#conteudos';
-    }
+    return location.pathname === path;
     return location.pathname.startsWith(path);
   };
 
