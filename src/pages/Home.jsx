@@ -43,11 +43,13 @@ export default function Home() {
   const handleMouseMove = (e, id) => {
     if (!isDragging) return;
     e.preventDefault();
-    setDragMoved(true);
     const carousel = carouselRefs.current[id];
     if (carousel) {
       const x = e.pageX - carousel.offsetLeft;
       const walk = (x - startX) * 2;
+      if (Math.abs(walk) > 5) {
+        setDragMoved(true);
+      }
       carousel.scrollLeft = scrollLeft - walk;
     }
   };
@@ -149,7 +151,7 @@ export default function Home() {
         </div>
       </section>
 
-      <main className="container" id="conteudos">
+      <main id="conteudos">
         {fetchError && (
           <div className="container" style={{ padding: '1rem', background: 'rgba(239,68,68,0.15)', borderRadius: 8, margin: '1rem auto', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)' }}>
             ⚠️ {fetchError}
@@ -167,20 +169,19 @@ export default function Home() {
           <div key={category.id} className={styles.categoryRow}>
             <div className="container">
               <h3 className={styles.categoryTitle}>{category.title}</h3>
-            </div>
-
-            <div 
-              className={styles.carouselWrapper}
-              ref={el => carouselRefs.current[category.id] = el}
-              onMouseDown={(e) => handleMouseDown(e, category.id)}
-              onMouseLeave={handleMouseLeave}
-              onMouseUp={handleMouseUp}
-              onMouseMove={(e) => handleMouseMove(e, category.id)}
-            >
-              <div className={styles.carousel}>
-                {category.lessons.length === 0 && (
-                  <p style={{ color: 'var(--color-text-muted)', padding: '1rem 2rem' }}>Nenhuma aula nesta trilha ainda.</p>
-                )}
+            
+              <div 
+                className={styles.carouselWrapper}
+                ref={el => carouselRefs.current[category.id] = el}
+                onMouseDown={(e) => handleMouseDown(e, category.id)}
+                onMouseLeave={handleMouseLeave}
+                onMouseUp={handleMouseUp}
+                onMouseMove={(e) => handleMouseMove(e, category.id)}
+              >
+                <div className={styles.carousel}>
+                  {category.lessons.length === 0 && (
+                    <p style={{ color: 'var(--color-text-muted)', padding: '1rem 2rem' }}>Nenhuma aula nesta trilha ainda.</p>
+                  )}
                 {category.lessons.map(lesson => {
                   const accessible = canWatch(lesson);
                   const isFree = lesson.is_free;
@@ -191,10 +192,11 @@ export default function Home() {
                       key={lesson.id}
                       className={`${styles.card} ${isLocked ? styles.cardLocked : ''}`}
                       onClick={(e) => handleCardClick(e, lesson)}
+                      onDragStart={(e) => e.preventDefault()}
                     >
                       <div className={styles.cardImageContainer}>
                         {lesson.cover_image_url ? (
-                          <img src={lesson.cover_image_url} alt={lesson.title} className={styles.cardImage} />
+                          <img src={lesson.cover_image_url} alt={lesson.title} className={styles.cardImage} draggable={false} />
                         ) : (
                           <div className={styles.cardPlaceholder}>
                             <Play size={40} />
@@ -236,6 +238,7 @@ export default function Home() {
                 })}
               </div>
             </div>
+          </div>
           </div>
         ))}
       </section>

@@ -79,8 +79,8 @@
 
 .carouselWrapper {
   overflow-x: auto;
-  /* Aumentado o padding top e bottom para o card não ser cortado ao escalar (hover) */
-  padding: 1.5rem max(2rem, calc((100vw - var(--max-width)) / 2 + 2rem)) 2.5rem max(2rem, calc((100vw - var(--max-width)) / 2 + 2rem));
+  /* Padding apenas em cima e em baixo para não cortar a sombra */
+  padding: 1.5rem 0 2.5rem 0;
   -ms-overflow-style: none;
   scrollbar-width: none;
   cursor: grab;
