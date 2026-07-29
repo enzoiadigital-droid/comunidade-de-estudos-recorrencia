@@ -119,10 +119,10 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
-      <Header />
+      {!session && <Header />}
 
       {/* Hero Section */}
-      <section className={styles.hero}>
+      <section className={styles.hero} style={{ paddingTop: session ? '40px' : '130px' }}>
         <div className={`container ${styles.heroContent}`}>
           <h1
             style={{
@@ -149,14 +149,14 @@ export default function Home() {
         </div>
       </section>
 
-      {fetchError && (
-        <div className="container" style={{ padding: '1rem', background: 'rgba(239,68,68,0.15)', borderRadius: 8, margin: '1rem auto', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)' }}>
-          ⚠️ {fetchError}
-        </div>
-      )}
+      <main className="container" id="conteudos">
+        {fetchError && (
+          <div className="container" style={{ padding: '1rem', background: 'rgba(239,68,68,0.15)', borderRadius: 8, margin: '1rem auto', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)' }}>
+            ⚠️ {fetchError}
+          </div>
+        )}
 
-      {/* Trilhas de Conteúdo */}
-      <section className={styles.content} style={{ paddingBottom: session && !isSubscriber ? '5rem' : '2rem' }}>
+        <section className={styles.content} style={{ paddingBottom: session && !isSubscriber ? '5rem' : '2rem' }}>
         {categories.length === 0 && !fetchError && (
           <div className="container" style={{ textAlign: 'center', marginTop: '4rem', color: 'var(--color-text-muted)' }}>
             <p>Nenhum conteúdo disponível no momento.</p>
@@ -242,6 +242,7 @@ export default function Home() {
 
       {/* Banner de upgrade para usuários logados sem assinatura */}
       {session && !isSubscriber && <SubscribeBanner />}
+      </main>
     </div>
   );
 }
