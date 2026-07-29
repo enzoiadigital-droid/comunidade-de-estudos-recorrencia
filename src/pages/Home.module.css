@@ -44,16 +44,19 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  white-space: pre-wrap;
   word-wrap: break-word;
-  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .heroContent p {
   font-size: 1.15rem;
   color: var(--color-text-muted);
-  white-space: normal;
+  white-space: pre-wrap;
   word-wrap: break-word;
-  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 @media (max-width: 640px) {
