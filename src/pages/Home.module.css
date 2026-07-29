@@ -211,7 +211,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(1px);
+  /* backdrop-filter removido para corrigir bug grave de scroll no iOS Safari */
+  pointer-events: none; /* Garante que o overlay não engula eventos de toque */
 }
 
 .lockIcon {
