@@ -25,7 +25,6 @@ export default function FlashcardsAdmin({ showMsg }) {
   const handleCreateDeck = async (e) => {
     e.preventDefault();
     if (!newDeck.name || !newDeck.subject) return;
-
     setLoading(true);
     const { error } = await supabase.from('flashcard_decks').insert([{
       name: newDeck.name,
@@ -34,10 +33,8 @@ export default function FlashcardsAdmin({ showMsg }) {
       is_published: true,
       user_id: null
     }]);
-    
     setLoading(false);
     if (error) { showMsg(error.message, 'error'); return; }
-    
     showMsg('Deck oficial criado!');
     setNewDeck({ name: '', subject: '' });
     fetchDecks();
@@ -54,7 +51,6 @@ export default function FlashcardsAdmin({ showMsg }) {
   const handleFileUpload = (e, deckId) => {
     const file = e.target.files[0];
     if (!file) return;
-
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
@@ -64,22 +60,11 @@ export default function FlashcardsAdmin({ showMsg }) {
           front: row.front,
           back: row.back
         }));
-
-        if (cards.length === 0) {
-          showMsg('Nenhum card válido encontrado no CSV.', 'error');
-          return;
-        }
-
+        if (cards.length === 0) { showMsg('Nenhum card válido encontrado no CSV.', 'error'); return; }
         const { error } = await supabase.from('flashcards').insert(cards);
-        if (error) {
-          showMsg(error.message, 'error');
-        } else {
-          showMsg(`${cards.length} cards importados com sucesso!`);
-        }
+        if (error) { showMsg(error.message, 'error'); } else { showMsg(`${cards.length} cards importados!`); }
       },
-      error: (error) => {
-        showMsg(`Erro ao ler arquivo: ${error.message}`, 'error');
-      }
+      error: (err) => showMsg(`Erro ao ler arquivo: ${err.message}`, 'error')
     });
     e.target.value = '';
   };
@@ -87,7 +72,7 @@ export default function FlashcardsAdmin({ showMsg }) {
   return (
     <div>
       <div className={`glass-panel ${styles.formCard}`}>
-        <h2 className={styles.formTitle}><BookOpen size={18} /> Nova Biblioteca de Flashcards (Oficial)</h2>
+        <h2 className={styles.formTitle}><BookOpen size={18} /> Novo Deck Oficial</h2>
         <form onSubmit={handleCreateDeck} className={styles.inlineForm}>
           <div className="input-group" style={{ flex: 1 }}>
             <label>Nome do Deck</label>
@@ -97,7 +82,9 @@ export default function FlashcardsAdmin({ showMsg }) {
             <label>Matéria</label>
             <input value={newDeck.subject} onChange={e => setNewDeck(p => ({ ...p, subject: e.target.value }))} required placeholder="Ex: Biologia" />
           </div>
-          <button type="submit" className={`btn-primary ${styles.submitBtn}`} disabled={loading}><PlusCircle size={16} /> Criar Oficial</button>
+          <button type="submit" className={`btn-primary ${styles.submitBtn}`} disabled={loading}>
+            <PlusCircle size={16} /> Criar
+          </button>
         </form>
       </div>
 
@@ -106,11 +93,10 @@ export default function FlashcardsAdmin({ showMsg }) {
         {decks.map(deck => (
           <div key={deck.id} className={styles.listItem} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <span className={styles.itemTitle}>{deck.subject} - {deck.name}</span>
+              <span className={styles.itemTitle}>{deck.subject} — {deck.name}</span>
             </div>
-            
-            <div className={styles.itemActions} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <label className={styles.btnEdit} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.25rem 0.5rem', border: '1px solid var(--border-color)', borderRadius: '4px' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', padding: '0.3rem 0.6rem', borderRadius: '6px' }}>
                 <Upload size={14} /> Importar CSV
                 <input type="file" accept=".csv" style={{ display: 'none' }} onChange={(e) => handleFileUpload(e, deck.id)} />
               </label>
@@ -118,7 +104,7 @@ export default function FlashcardsAdmin({ showMsg }) {
             </div>
           </div>
         ))}
-        {decks.length === 0 && <p style={{ color: 'var(--text-color-secondary)' }}>Nenhum deck oficial cadastrado.</p>}
+        {decks.length === 0 && <p style={{ color: 'var(--color-text-muted)' }}>Nenhum deck oficial cadastrado.</p>}
       </div>
     </div>
   );

@@ -12,11 +12,12 @@ const SUBJECTS = [
 ];
 
 export default function CreateDeckModal({ isOpen, onClose, onSuccess }) {
-  const { user } = useAuth();
+  const { session } = useAuth();
   const [name, setName] = useState('');
   const [subject, setSubject] = useState(SUBJECTS[0]);
   const [topic, setTopic] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   if (!isOpen) return null;
 
@@ -24,12 +25,19 @@ export default function CreateDeckModal({ isOpen, onClose, onSuccess }) {
     e.preventDefault();
     if (!name.trim()) return;
 
+    const userId = session?.user?.id;
+    if (!userId) {
+      setErrorMsg('Você precisa estar logado para criar um deck.');
+      return;
+    }
+
     try {
       setLoading(true);
+      setErrorMsg('');
       const { data, error } = await supabase
         .from('flashcard_decks')
         .insert([{
-          user_id: user.id,
+          user_id: userId,
           name: name.trim(),
           subject,
           topic: topic.trim() || null,
@@ -46,7 +54,7 @@ export default function CreateDeckModal({ isOpen, onClose, onSuccess }) {
       setSubject(SUBJECTS[0]);
     } catch (error) {
       console.error('Error creating deck:', error);
-      alert('Erro ao criar o deck. Tente novamente.');
+      setErrorMsg(`Erro: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -63,10 +71,16 @@ export default function CreateDeckModal({ isOpen, onClose, onSuccess }) {
         </div>
 
         <form onSubmit={handleSubmit}>
+          {errorMsg && (
+            <div style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid #ef4444', color: '#ef4444', padding: '0.75rem 1rem', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.9rem' }}>
+              {errorMsg}
+            </div>
+          )}
+
           <div className={styles.formGroup}>
-            <label htmlFor="name">Nome do Deck *</label>
+            <label htmlFor="deck-name">Nome do Deck *</label>
             <input
-              id="name"
+              id="deck-name"
               type="text"
               className={styles.input}
               value={name}
@@ -78,9 +92,9 @@ export default function CreateDeckModal({ isOpen, onClose, onSuccess }) {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="subject">Matéria *</label>
+            <label htmlFor="deck-subject">Matéria *</label>
             <select
-              id="subject"
+              id="deck-subject"
               className={styles.select}
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
@@ -92,9 +106,9 @@ export default function CreateDeckModal({ isOpen, onClose, onSuccess }) {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="topic">Tópico (Opcional)</label>
+            <label htmlFor="deck-topic">Tópico (Opcional)</label>
             <input
-              id="topic"
+              id="deck-topic"
               type="text"
               className={styles.input}
               value={topic}
