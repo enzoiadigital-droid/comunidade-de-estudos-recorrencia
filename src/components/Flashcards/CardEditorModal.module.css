@@ -1,42 +1,26 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  padding: 1rem;
   animation: fadeIn 0.2s ease-out;
-  /* safe side padding so modal never touches edges */
-  padding: 0 12px 0;
 }
 
 .modal {
   background: var(--color-bg-secondary);
-  border-radius: 20px 20px 0 0;
+  border-radius: 16px;
   width: 100%;
-  max-width: 560px;
-  max-height: 88vh;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
-  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: popIn 0.25s ease-out;
   overflow: hidden;
-  /* bottom of modal should respect home indicator */
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-@media (min-width: 600px) {
-  .overlay {
-    align-items: center;
-    padding: 0;
-  }
-  .modal {
-    border-radius: 16px;
-    max-height: 85vh;
-    padding-bottom: 0;
-  }
 }
 
 @keyframes fadeIn {
@@ -44,9 +28,9 @@
   to   { opacity: 1; }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 /* ── Header ── */
@@ -84,7 +68,6 @@
 /* ── Form ── */
 .content {
   padding: 1.25rem;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -115,7 +98,7 @@
   font-size: 0.95rem;
   resize: none;
   line-height: 1.5;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .textarea:focus {
@@ -142,11 +125,6 @@
   font-size: 0.85rem;
   font-weight: 600;
   animation: popIn 0.3s ease-out;
-}
-
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
 }
 
 /* ── Footer ── */
