@@ -23,7 +23,7 @@
 .title {
   margin: 0;
   font-size: 1.5rem;
-  color: var(--text-color);
+  color: var(--color-text);
 }
 
 .progressContainer {
@@ -34,20 +34,20 @@
 
 .progressBar {
   height: 8px;
-  background: var(--border-color);
+  background: var(--color-border);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
-  background: var(--primary-color);
+  background: var(--color-gold);
   transition: width 0.3s ease;
 }
 
 .progressText {
   font-size: 0.85rem;
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
   text-align: center;
   margin-top: 0.5rem;
   display: block;
@@ -58,17 +58,17 @@
   align-items: center;
   gap: 0.5rem;
   background: none;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .exitButton:hover {
-  background: var(--card-bg);
-  color: var(--text-color);
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
 }
 
 .cardArea {
@@ -85,8 +85,8 @@
   width: 100%;
   max-width: 600px;
   min-height: 350px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   padding: 3rem;
@@ -96,7 +96,7 @@
   justify-content: center;
   text-align: center;
   font-size: 1.25rem;
-  color: var(--text-color);
+  color: var(--color-text);
   position: relative;
   transition: transform 0.6s;
   transform-style: preserve-3d;
@@ -122,15 +122,15 @@
 .divider {
   width: 100%;
   height: 1px;
-  background: var(--border-color);
+  background: var(--color-border);
   margin: 2rem 0;
 }
 
 .showAnswerBtn {
   margin-top: 2rem;
   padding: 1rem 2.5rem;
-  background: var(--primary-color);
-  color: white;
+  background: var(--color-gold);
+  color: #000;
   border: none;
   border-radius: 30px;
   font-size: 1.1rem;
@@ -142,7 +142,7 @@
 
 .showAnswerBtn:hover {
   transform: translateY(-2px);
-  background: var(--primary-color-dark);
+  background: var(--color-gold-hover);
 }
 
 .ratingButtons {
@@ -186,22 +186,22 @@
 
 /* Resumo Final */
 .summaryCard {
-  background: var(--card-bg);
+  background: var(--color-bg-secondary);
   border-radius: 16px;
   padding: 3rem;
   text-align: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
 }
 
 .summaryIcon {
-  color: var(--primary-color);
+  color: var(--color-gold);
   margin-bottom: 1rem;
 }
 
 .summaryTitle {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: var(--text-color);
+  color: var(--color-text);
 }
 
 .summaryStats {
@@ -220,11 +220,11 @@
 .statValue {
   font-size: 2.5rem;
   font-weight: bold;
-  color: var(--primary-color);
+  color: var(--color-gold);
 }
 
 .statLabel {
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
   text-transform: uppercase;
   font-size: 0.85rem;
   letter-spacing: 1px;

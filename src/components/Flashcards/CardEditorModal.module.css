@@ -14,7 +14,7 @@
 }
 
 .modal {
-  background: var(--bg-color);
+  background: var(--color-bg);
   border-radius: 16px;
   width: 95%;
   max-width: 900px;
@@ -41,20 +41,20 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  border-bottom: 1px solid var(--border-color);
-  background: var(--card-bg);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
 }
 
 .header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: var(--text-color);
+  color: var(--color-text);
 }
 
 .closeButton {
   background: none;
   border: none;
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 50%;
@@ -62,8 +62,8 @@
 }
 
 .closeButton:hover {
-  background: var(--border-color);
-  color: var(--text-color);
+  background: var(--color-border);
+  color: var(--color-text);
 }
 
 .content {
@@ -82,15 +82,15 @@
 
 .editorSection label {
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--color-text);
 }
 
 .toolbar {
   display: flex;
   gap: 0.5rem;
   padding: 0.5rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
   border-bottom: none;
   border-radius: 8px 8px 0 0;
 }
@@ -100,24 +100,24 @@
   border: none;
   padding: 0.5rem;
   border-radius: 4px;
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .toolbarButton:hover {
-  background: var(--border-color);
-  color: var(--primary-color);
+  background: var(--color-border);
+  color: var(--color-gold);
 }
 
 .textarea {
   width: 100%;
   min-height: 150px;
   padding: 1rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
   border-radius: 0 0 8px 8px;
-  background: var(--bg-color);
-  color: var(--text-color);
+  background: var(--color-bg);
+  color: var(--color-text);
   font-family: monospace;
   font-size: 1rem;
   resize: vertical;
@@ -125,33 +125,33 @@
 
 .textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: var(--color-gold);
 }
 
 .preview {
   margin-top: 1rem;
   padding: 1.5rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: var(--card-bg);
+  background: var(--color-bg-secondary);
   min-height: 100px;
 }
 
 .previewLabel {
   font-size: 0.75rem;
   text-transform: uppercase;
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
   margin-bottom: 0.5rem;
   display: block;
 }
 
 .footer {
   padding: 1.5rem 2rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--card-bg);
+  background: var(--color-bg-secondary);
 }
 
 .actions {
@@ -161,9 +161,9 @@
 
 .cancelButton {
   padding: 0.75rem 1.5rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
   background: none;
-  color: var(--text-color);
+  color: var(--color-text);
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -171,8 +171,8 @@
 
 .saveButton {
   padding: 0.75rem 1.5rem;
-  background: var(--primary-color);
-  color: white;
+  background: var(--color-gold);
+  color: #000;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -180,5 +180,5 @@
 }
 
 .saveButton:hover {
-  background: var(--primary-color-dark);
+  background: var(--color-gold-hover);
 }

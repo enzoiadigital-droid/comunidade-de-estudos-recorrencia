@@ -20,12 +20,12 @@
 .title {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--text-color);
+  color: var(--color-text);
   margin: 0;
 }
 
 .subtitle {
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
   font-size: 1rem;
   margin-top: 0.25rem;
 }
@@ -35,7 +35,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--primary-color);
+  background: var(--color-gold);
   color: white;
   border: none;
   border-radius: 8px;
@@ -46,13 +46,13 @@
 }
 
 .createButton:hover {
-  background: var(--primary-color-dark);
+  background: var(--color-gold-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .highlightCard {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-hover) 100%);
   border-radius: 16px;
   padding: 2rem;
   color: white;
@@ -75,8 +75,8 @@
 }
 
 .startButton {
-  background: white;
-  color: var(--primary-color);
+  background: var(--color-gold);
+  color: #000;
   border: none;
   padding: 0.75rem 2rem;
   border-radius: 30px;
@@ -93,7 +93,7 @@
 .tabs {
   display: flex;
   gap: 1.5rem;
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 2px solid var(--color-border);
   margin-bottom: 2rem;
 }
 
@@ -101,7 +101,7 @@
   padding: 0.75rem 1rem;
   background: none;
   border: none;
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
@@ -110,11 +110,11 @@
 }
 
 .tab:hover {
-  color: var(--text-color);
+  color: var(--color-text);
 }
 
 .tab.active {
-  color: var(--primary-color);
+  color: var(--color-gold);
 }
 
 .tab.active::after {
@@ -124,7 +124,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--primary-color);
+  background: var(--color-gold);
   border-radius: 2px 2px 0 0;
 }
 
@@ -135,8 +135,8 @@
 }
 
 .deckCard {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -148,7 +148,7 @@
 .deckCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  border-color: var(--primary-color);
+  border-color: var(--color-gold);
 }
 
 .deckHeader {
@@ -161,7 +161,7 @@
 .deckSubject {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--primary-color);
+  color: var(--color-gold);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -169,7 +169,7 @@
 .deckName {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--color-text);
   margin: 0.5rem 0;
 }
 
@@ -178,8 +178,8 @@
   gap: 1rem;
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
-  color: var(--text-color-secondary);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
   font-size: 0.9rem;
 }
 
@@ -192,12 +192,12 @@
 .emptyState {
   text-align: center;
   padding: 4rem 2rem;
-  color: var(--text-color-secondary);
+  color: var(--color-text-muted);
 }
 
 .emptyStateIcon {
   width: 64px;
   height: 64px;
   margin-bottom: 1rem;
-  color: var(--border-color);
+  color: var(--color-border);
 }
