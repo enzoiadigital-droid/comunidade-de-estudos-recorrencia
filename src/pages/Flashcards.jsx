@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Layers, Library, BrainCircuit, BookOpen, Clock } from 'lucide-react';
+import { Plus, Layers, Library, BrainCircuit, BookOpen, Clock, Zap, ArrowRight } from 'lucide-react';
 import styles from './Flashcards.module.css';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -49,47 +49,108 @@ export default function Flashcards() {
     }
   };
 
+  const handleOfficialDeckClick = async (deck) => {
+    if (!userId) return;
+    // Clone to user's decks and navigate to it
+    try {
+      // Check if already cloned
+      const { data: existing } = await supabase
+        .from('flashcard_decks')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('name', deck.name)
+        .maybeSingle();
+
+      if (existing) {
+        navigate(`/flashcards/deck/${existing.id}`);
+        return;
+      }
+
+      // Clone the deck
+      const { data: newDeck, error: deckError } = await supabase
+        .from('flashcard_decks')
+        .insert([{
+          user_id: userId,
+          name: deck.name,
+          subject: deck.subject,
+          topic: deck.topic,
+          is_official: false,
+          is_published: false,
+        }])
+        .select()
+        .single();
+
+      if (deckError) throw deckError;
+
+      // Clone its cards
+      const { data: originalCards } = await supabase
+        .from('flashcards')
+        .select('front, back')
+        .eq('deck_id', deck.id);
+
+      if (originalCards && originalCards.length > 0) {
+        await supabase.from('flashcards').insert(
+          originalCards.map(c => ({ deck_id: newDeck.id, front: c.front, back: c.back }))
+        );
+      }
+
+      setMyDecks(prev => [newDeck, ...prev]);
+      navigate(`/flashcards/deck/${newDeck.id}`);
+    } catch (err) {
+      console.error('Failed to clone deck:', err);
+    }
+  };
+
   return (
     <div className={styles.container}>
+      {/* Header */}
       <header className={styles.header}>
-        <div>
+        <div className={styles.titleArea}>
           <h1 className={styles.title}>Flashcards</h1>
           <p className={styles.subtitle}>Memorização eficiente com repetição espaçada</p>
         </div>
         <button className={styles.createButton} onClick={() => setIsCreateModalOpen(true)}>
-          <Plus size={20} />
+          <Plus size={18} />
           Criar Deck
         </button>
       </header>
 
+      {/* Highlight Card — elegant glassmorphism */}
       <section className={styles.highlightCard}>
         <div className={styles.highlightInfo}>
+          <span className={styles.highlightBadge}>
+            <Zap size={10} /> Revisão Diária
+          </span>
           <h2>Revisões de Hoje</h2>
-          <p>Organize seu estudo com repetição espaçada e memorize mais em menos tempo.</p>
+          <p>Estude com repetição espaçada e consolide o conhecimento de forma eficiente.</p>
         </div>
-        <button className={styles.startButton}>Começar Revisão</button>
+        <button className={styles.startButton}>
+          Começar Revisão
+        </button>
       </section>
 
+      {/* Tabs */}
       <div className={styles.tabs}>
         <button
           className={`${styles.tab} ${activeTab === 'meus_decks' ? styles.active : ''}`}
           onClick={() => setActiveTab('meus_decks')}
         >
-          <Layers size={18} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom' }} />
+          <Layers size={16} />
           Meus Decks
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'biblioteca' ? styles.active : ''}`}
           onClick={() => setActiveTab('biblioteca')}
         >
-          <Library size={18} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom' }} />
+          <Library size={16} />
           Explorar Biblioteca
         </button>
       </div>
 
+      {/* Content */}
       {loading ? (
         <div className={styles.emptyState}>
-          <p style={{ color: 'var(--color-text-muted)' }}>Carregando decks...</p>
+          <p>Carregando decks...</p>
         </div>
       ) : activeTab === 'meus_decks' ? (
         <div className={styles.grid}>
@@ -101,20 +162,20 @@ export default function Flashcards() {
                 </div>
                 <h3 className={styles.deckName}>{deck.name}</h3>
                 <div className={styles.deckStats}>
-                  <div className={styles.stat} title="Total de Cards">
-                    <Layers size={16} /> 0 cards
+                  <div className={styles.stat}>
+                    <Layers size={14} /> 0 cards
                   </div>
-                  <div className={styles.stat} title="Para Revisar Hoje">
-                    <Clock size={16} /> 0 pendentes
+                  <div className={styles.stat}>
+                    <Clock size={14} /> 0 pendentes
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
-              <BrainCircuit size={48} style={{ color: 'var(--color-border)', marginBottom: '1rem' }} />
+            <div className={styles.emptyState}>
+              <BrainCircuit size={44} style={{ color: 'var(--color-border)', marginBottom: '0.75rem' }} />
               <h3>Nenhum deck ainda</h3>
-              <p>Clique em "Criar Deck" ou explore a Biblioteca Oficial para começar.</p>
+              <p>Crie seu primeiro deck ou explore a Biblioteca Oficial e adicione ao seu perfil.</p>
             </div>
           )}
         </div>
@@ -122,24 +183,30 @@ export default function Flashcards() {
         <div className={styles.grid}>
           {officialDecks.length > 0 ? (
             officialDecks.map(deck => (
-              <div key={deck.id} className={styles.deckCard}>
+              <div
+                key={deck.id}
+                className={styles.deckCard}
+                onClick={() => handleOfficialDeckClick(deck)}
+                title="Clique para adicionar aos seus decks e estudar"
+              >
                 <div className={styles.deckHeader}>
                   <span className={styles.deckSubject}>{deck.subject}</span>
-                  <span style={{ fontSize: '0.75rem', background: 'var(--color-gold)', color: '#000', padding: '2px 8px', borderRadius: '12px', fontWeight: '600' }}>
-                    Oficial
-                  </span>
+                  <span className={styles.officialBadge}>✦ Oficial</span>
                 </div>
                 <h3 className={styles.deckName}>{deck.name}</h3>
                 <div className={styles.deckStats}>
                   <div className={styles.stat}>
-                    <Layers size={16} /> 0 cards
+                    <Layers size={14} /> 0 cards
+                  </div>
+                  <div className={styles.stat} style={{ marginLeft: 'auto', color: 'var(--color-gold)', fontWeight: 600, fontSize: '0.78rem' }}>
+                    Adicionar <ArrowRight size={13} />
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className={styles.emptyState} style={{ gridColumn: '1 / -1' }}>
-              <BookOpen size={48} style={{ color: 'var(--color-border)', marginBottom: '1rem' }} />
+            <div className={styles.emptyState}>
+              <BookOpen size={44} style={{ color: 'var(--color-border)', marginBottom: '0.75rem' }} />
               <h3>Biblioteca Vazia</h3>
               <p>Nenhum deck oficial disponível no momento.</p>
             </div>
