@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Play, Edit3, Trash2, BookOpen } from 'lucide-react';
 import styles from './DeckDetails.module.css';
-import supabase from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import CardEditorModal from '../components/Flashcards/CardEditorModal';
 import ReactMarkdown from 'react-markdown';

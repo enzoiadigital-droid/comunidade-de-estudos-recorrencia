@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Layers, Library, BrainCircuit, BookOpen, Clock } from 'lucide-react';
 import styles from './Flashcards.module.css';
-import supabase from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import CreateDeckModal from '../components/Flashcards/CreateDeckModal';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Bold, Italic, List, Image, Type } from 'lucide-react';
 import styles from './CardEditorModal.module.css';
-import supabase from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';

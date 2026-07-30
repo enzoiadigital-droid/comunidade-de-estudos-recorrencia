@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import supabase from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import Papa from 'papaparse';
 import { PlusCircle, Trash2, Upload, BookOpen } from 'lucide-react';
 import styles from '../../pages/Admin.module.css';
