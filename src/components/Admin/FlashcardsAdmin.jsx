@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import Papa from 'papaparse';
-import { PlusCircle, Trash2, Upload, BookOpen } from 'lucide-react';
+import { PlusCircle, Trash2, Upload, BookOpen, Download } from 'lucide-react';
 import styles from '../../pages/Admin.module.css';
 
 export default function FlashcardsAdmin({ showMsg }) {
@@ -69,6 +69,105 @@ export default function FlashcardsAdmin({ showMsg }) {
     e.target.value = '';
   };
 
+  const handleMassImport = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setLoading(true);
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        try {
+          const rows = results.data;
+          let newDecksCount = 0;
+          let newCardsCount = 0;
+          
+          // Organize by deck name and subject
+          const decksMap = {};
+          
+          for (const row of rows) {
+            const subject = row['Matéria']?.trim();
+            const deckName = row['Tópico ou assunto']?.trim();
+            const front = row['Frente']?.trim();
+            const back = row['Verso']?.trim();
+            
+            if (!subject || !deckName || !front || !back) continue;
+            
+            const key = `${subject}|||${deckName}`;
+            if (!decksMap[key]) {
+              decksMap[key] = { subject, deckName, cards: [] };
+            }
+            decksMap[key].cards.push({ front, back });
+          }
+          
+          const groups = Object.values(decksMap);
+          if (groups.length === 0) {
+            showMsg('Nenhum dado válido encontrado. Verifique se as colunas estão exatas: "Tópico ou assunto", "Matéria", "Frente" e "Verso".', 'error');
+            setLoading(false);
+            return;
+          }
+          
+          for (const group of groups) {
+            // Check if deck exists
+            let { data: existingDecks, error: findError } = await supabase
+              .from('flashcard_decks')
+              .select('id')
+              .eq('name', group.deckName)
+              .eq('subject', group.subject)
+              .eq('is_official', true);
+              
+            let deckId;
+            
+            if (existingDecks && existingDecks.length > 0) {
+              deckId = existingDecks[0].id;
+            } else {
+              // Create deck
+              const { data: newDeckData, error: createError } = await supabase
+                .from('flashcard_decks')
+                .insert([{
+                  name: group.deckName,
+                  subject: group.subject,
+                  is_official: true,
+                  is_published: true
+                }])
+                .select();
+                
+              if (createError) throw createError;
+              deckId = newDeckData[0].id;
+              newDecksCount++;
+            }
+            
+            // Insert cards
+            const cardsToInsert = group.cards.map(c => ({
+              deck_id: deckId,
+              front: c.front,
+              back: c.back
+            }));
+            
+            const { error: insertError } = await supabase
+              .from('flashcards')
+              .insert(cardsToInsert);
+              
+            if (insertError) throw insertError;
+            newCardsCount += cardsToInsert.length;
+          }
+          
+          showMsg(`Importação em massa concluída! ${newDecksCount} decks novos e ${newCardsCount} cards inseridos.`);
+          fetchDecks();
+        } catch (err) {
+          showMsg(`Erro na importação: ${err.message}`, 'error');
+        } finally {
+          setLoading(false);
+          e.target.value = '';
+        }
+      },
+      error: (err) => {
+        showMsg(`Erro ao ler arquivo: ${err.message}`, 'error');
+        setLoading(false);
+      }
+    });
+  };
+
   return (
     <div>
       <div className={`glass-panel ${styles.formCard}`}>
@@ -89,7 +188,19 @@ export default function FlashcardsAdmin({ showMsg }) {
       </div>
 
       <div className={styles.listSection}>
-        <h3 className={styles.listTitle}>Decks Oficiais</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <h3 className={styles.listTitle} style={{ margin: 0 }}>Decks Oficiais</h3>
+          
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <a href="/template_flashcards_massa.csv" download className={styles.btnCancel} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.8rem' }} title="Baixe a planilha modelo">
+              <Download size={15} /> Baixar Template
+            </a>
+            <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', background: 'var(--color-gold)', color: '#000', fontWeight: 'bold', padding: '0.45rem 1rem', borderRadius: '8px', transition: 'all 0.2s' }}>
+              <Upload size={16} /> Importação em Massa
+              <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleMassImport} disabled={loading} />
+            </label>
+          </div>
+        </div>
         {decks.map(deck => (
           <div key={deck.id} className={styles.listItem} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
