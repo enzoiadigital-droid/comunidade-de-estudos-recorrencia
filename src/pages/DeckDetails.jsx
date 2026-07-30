@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Play, Edit3, Trash2, BookOpen } from 'lucide-react';
+import { ArrowLeft, Plus, Play, Edit3, Trash2, Settings, RotateCcw } from 'lucide-react';
 import styles from './DeckDetails.module.css';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -19,6 +19,18 @@ export default function DeckDetails() {
   const [loading, setLoading] = useState(true);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(`.${styles.settingsWrapper}`)) {
+        setIsSettingsOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     fetchDeckData();
@@ -63,6 +75,35 @@ export default function DeckDetails() {
     }
   };
 
+  const handleDeleteDeck = async () => {
+    if (!window.confirm('Tem certeza que deseja APAGAR este deck inteiramente? Esta ação não pode ser desfeita.')) return;
+    try {
+      const { error } = await supabase.from('flashcard_decks').delete().eq('id', deck.id);
+      if (error) throw error;
+      navigate('/flashcards');
+    } catch (error) {
+      console.error('Error deleting deck:', error);
+      alert('Erro ao apagar deck: ' + error.message);
+    }
+  };
+
+  const handleResetProgress = async () => {
+    if (!window.confirm('Tem certeza que deseja resetar todo o seu progresso de estudo neste deck? Você começará do zero.')) return;
+    try {
+      const { error } = await supabase
+        .from('flashcard_reviews')
+        .delete()
+        .eq('deck_id', deck.id)
+        .eq('user_id', session?.user?.id);
+      if (error) throw error;
+      alert('Progresso resetado com sucesso!');
+      setIsSettingsOpen(false);
+    } catch (error) {
+      console.error('Error resetting progress:', error);
+      alert('Erro ao resetar progresso: ' + error.message);
+    }
+  };
+
   if (loading) return (
     <div className={styles.container}>
       <p style={{ color: 'var(--color-text-muted)' }}>Carregando deck...</p>
@@ -83,12 +124,36 @@ export default function DeckDetails() {
       </button>
 
       <header className={styles.header}>
-        {/* Title row: subject + title (no buttons here on mobile) */}
+        {/* Title row: subject + title + settings gear */}
         <div className={styles.titleRow}>
           <div className={styles.titleSection}>
             <span className={styles.subjectBadge}>{deck.subject}</span>
             <h1>{deck.name}</h1>
             <p className={styles.cardCount}>{cards.length} {cards.length === 1 ? 'card' : 'cards'} totais</p>
+          </div>
+          
+          <div className={styles.settingsWrapper}>
+            <button 
+              className={styles.settingsButton} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsSettingsOpen(!isSettingsOpen);
+              }}
+              title="Configurações do Deck"
+            >
+              <Settings size={20} />
+            </button>
+            
+            {isSettingsOpen && (
+              <div className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
+                <button className={styles.dropdownItem} onClick={handleResetProgress}>
+                  <RotateCcw size={15} /> Resetar Progresso
+                </button>
+                <button className={`${styles.dropdownItem} ${styles.danger}`} onClick={handleDeleteDeck}>
+                  <Trash2 size={15} /> Apagar Deck
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

@@ -79,6 +79,75 @@
   margin-top: 0.3rem;
 }
 
+/* ── Settings Dropdown ── */
+.settingsWrapper {
+  position: relative;
+}
+
+.settingsButton {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settingsButton:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.dropdownMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  padding: 0.4rem;
+  z-index: 100;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: left;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdownItem.danger {
+  color: #ef4444;
+}
+
+.dropdownItem.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
 /* ── Action buttons row ── */
 .actions {
   display: flex;
