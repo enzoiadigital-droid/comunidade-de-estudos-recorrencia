@@ -128,7 +128,8 @@ export default function FlashcardsAdmin({ showMsg }) {
                   name: group.deckName,
                   subject: group.subject,
                   is_official: true,
-                  is_published: true
+                  is_published: true,
+                  user_id: null
                 }])
                 .select();
                 
