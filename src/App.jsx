@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Lesson from './pages/Lesson';
 import Admin from './pages/Admin';
+import Flashcards from './pages/Flashcards';
 
 import AppLayout from './components/AppLayout';
 import TrackerEstudos from './pages/TrackerEstudos';
@@ -55,7 +56,7 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/tracker" element={<TrackerEstudos />} />
-          <Route path="/flashcards" element={<ComingSoon title="Flashcards Inteligentes" />} />
+          <Route path="/flashcards" element={<Flashcards />} />
           <Route path="/progresso" element={<ComingSoon title="Meu Progresso" />} />
           <Route path="/conta" element={<MinhaConta />} />
         </Route>
