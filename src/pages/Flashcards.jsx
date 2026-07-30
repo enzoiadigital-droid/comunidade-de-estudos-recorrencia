@@ -3,10 +3,12 @@ import { Plus, Layers, Library, BrainCircuit, BookOpen, Clock } from 'lucide-rea
 import styles from './Flashcards.module.css';
 import supabase from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import CreateDeckModal from '../components/Flashcards/CreateDeckModal';
 
 export default function Flashcards() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('meus_decks');
   const [myDecks, setMyDecks] = useState([]);
   const [officialDecks, setOfficialDecks] = useState([]);
@@ -93,7 +95,7 @@ export default function Flashcards() {
         <div className={styles.grid}>
           {myDecks.length > 0 ? (
             myDecks.map(deck => (
-              <div key={deck.id} className={styles.deckCard}>
+              <div key={deck.id} className={styles.deckCard} onClick={() => navigate(`/flashcards/deck/${deck.id}`)}>
                 <div className={styles.deckHeader}>
                   <span className={styles.deckSubject}>{deck.subject}</span>
                 </div>

@@ -1,0 +1,231 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px); /* subtract header/nav height approximately */
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-color);
+}
+
+.progressContainer {
+  flex: 1;
+  max-width: 300px;
+  margin: 0 2rem;
+}
+
+.progressBar {
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  text-align: center;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.exitButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exitButton:hover {
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+.cardArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  perspective: 1000px;
+}
+
+.flashcard {
+  width: 100%;
+  max-width: 600px;
+  min-height: 350px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.25rem;
+  color: var(--text-color);
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flashcard.flipped {
+  /* For a real 3D flip we'd need front/back faces, but we can just toggle content */
+}
+
+.cardContent {
+  width: 100%;
+  /* For markdown */
+}
+
+.cardContent :global(p) {
+  margin-bottom: 1rem;
+}
+.cardContent :global(img) {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-color);
+  margin: 2rem 0;
+}
+
+.showAnswerBtn {
+  margin-top: 2rem;
+  padding: 1rem 2.5rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.showAnswerBtn:hover {
+  transform: translateY(-2px);
+  background: var(--primary-color-dark);
+}
+
+.ratingButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.rateBtn {
+  flex: 1;
+  max-width: 120px;
+  padding: 1rem 0.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.2s;
+  color: white;
+}
+
+.rateBtn span {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.rate1 { background: #ef4444; }
+.rate2 { background: #f59e0b; }
+.rate3 { background: #10b981; }
+.rate4 { background: #3b82f6; }
+
+.rateBtn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* Resumo Final */
+.summaryCard {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 3rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+}
+
+.summaryIcon {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.summaryTitle {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.summaryStats {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin: 2rem 0;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.statLabel {
+  color: var(--text-color-secondary);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}

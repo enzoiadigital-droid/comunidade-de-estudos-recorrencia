@@ -5,8 +5,9 @@ import { useSettings } from '../context/SettingsContext';
 import styles from './Admin.module.css';
 import {
   PlusCircle, Save, Pencil, Trash2, ChevronDown, ChevronUp,
-  X, Paperclip, ExternalLink, FolderOpen, SlidersHorizontal
+  X, Paperclip, ExternalLink, FolderOpen, SlidersHorizontal, BookOpen
 } from 'lucide-react';
+import FlashcardsAdmin from '../components/Admin/FlashcardsAdmin';
 
 // ────────────────────────────────────────────────
 // Modal de Confirmação de Exclusão
@@ -655,6 +656,9 @@ export default function Admin() {
           <button className={`${styles.tabBtn} ${activeTab === 'categories' ? styles.activeTab : ''}`} onClick={() => setActiveTab('categories')}>
             Categorias
           </button>
+          <button className={`${styles.tabBtn} ${activeTab === 'flashcards' ? styles.activeTab : ''}`} onClick={() => setActiveTab('flashcards')}>
+            🧠 Flashcards
+          </button>
           <button className={`${styles.tabBtn} ${activeTab === 'settings' ? styles.activeTab : ''}`} onClick={() => setActiveTab('settings')}>
             ⚙️ Configurações
           </button>
@@ -662,6 +666,7 @@ export default function Admin() {
 
         {activeTab === 'categories' && <CategoriesSection showMsg={showMsg} />}
         {activeTab === 'lessons' && <LessonsSection showMsg={showMsg} />}
+        {activeTab === 'flashcards' && <FlashcardsAdmin showMsg={showMsg} />}
         {activeTab === 'settings' && <SettingsSection showMsg={showMsg} />}
       </main>
     </div>

@@ -10,6 +10,8 @@ import Flashcards from './pages/Flashcards';
 
 import AppLayout from './components/AppLayout';
 import TrackerEstudos from './pages/TrackerEstudos';
+import DeckDetails from './pages/DeckDetails';
+import StudySession from './pages/StudySession';
 import ComingSoon from './pages/ComingSoon';
 import MinhaConta from './pages/MinhaConta';
 
@@ -57,6 +59,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/tracker" element={<TrackerEstudos />} />
           <Route path="/flashcards" element={<Flashcards />} />
+          <Route path="/flashcards/deck/:id" element={<DeckDetails />} />
+          <Route path="/flashcards/study/:id" element={<StudySession />} />
           <Route path="/progresso" element={<ComingSoon title="Meu Progresso" />} />
           <Route path="/conta" element={<MinhaConta />} />
         </Route>
