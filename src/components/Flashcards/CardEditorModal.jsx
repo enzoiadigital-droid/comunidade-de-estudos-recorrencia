@@ -1,126 +1,149 @@
-import React, { useState, useEffect } from 'react';
-import { X, Bold, Italic, List, Image, Type } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, CheckCircle } from 'lucide-react';
 import styles from './CardEditorModal.module.css';
 import { supabase } from '../../lib/supabase';
-import ReactMarkdown from 'react-markdown';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
 
 export default function CardEditorModal({ isOpen, onClose, deckId, cardToEdit, onSuccess }) {
   const [front, setFront] = useState('');
   const [back, setBack] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const frontRef = useRef(null);
 
   useEffect(() => {
-    if (cardToEdit) {
-      setFront(cardToEdit.front);
-      setBack(cardToEdit.back);
-    } else {
-      setFront('');
-      setBack('');
+    if (isOpen) {
+      if (cardToEdit) {
+        setFront(cardToEdit.front);
+        setBack(cardToEdit.back);
+      } else {
+        setFront('');
+        setBack('');
+      }
+      setShowSuccess(false);
+      // Focus the front field when modal opens
+      setTimeout(() => frontRef.current?.focus(), 100);
     }
-  }, [cardToEdit, isOpen]);
+  }, [isOpen, cardToEdit]);
 
   if (!isOpen) return null;
-
-  const insertText = (setter, textToInsert) => {
-    setter(prev => prev + textToInsert);
-  };
 
   const handleSave = async () => {
     if (!front.trim() || !back.trim()) return;
 
     try {
       setLoading(true);
+
       if (cardToEdit) {
+        // Edit mode: update and close
         const { data, error } = await supabase
           .from('flashcards')
-          .update({ front, back })
+          .update({ front: front.trim(), back: back.trim() })
           .eq('id', cardToEdit.id)
           .select();
         if (error) throw error;
         onSuccess(data[0], 'update');
       } else {
+        // Create mode: save, show toast, reset for next card
         const { data, error } = await supabase
           .from('flashcards')
-          .insert([{ deck_id: deckId, front, back }])
+          .insert([{ deck_id: deckId, front: front.trim(), back: back.trim() }])
           .select();
         if (error) throw error;
+
         onSuccess(data[0], 'create');
+
+        // Show success toast and reset fields
+        setShowSuccess(true);
+        setFront('');
+        setBack('');
+        setTimeout(() => {
+          setShowSuccess(false);
+          frontRef.current?.focus();
+        }, 1800);
       }
     } catch (error) {
       console.error('Error saving card:', error);
-      alert('Erro ao salvar card: ' + error.message);
+      alert('Erro ao salvar: ' + error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const renderToolbar = (setter) => (
-    <div className={styles.toolbar}>
-      <button type="button" className={styles.toolbarButton} onClick={() => insertText(setter, '**Negrito** ')} title="Negrito"><Bold size={16} /></button>
-      <button type="button" className={styles.toolbarButton} onClick={() => insertText(setter, '*Itálico* ')} title="Itálico"><Italic size={16} /></button>
-      <button type="button" className={styles.toolbarButton} onClick={() => insertText(setter, '\n- ')} title="Lista"><List size={16} /></button>
-      <button type="button" className={styles.toolbarButton} onClick={() => insertText(setter, '![alt](url)')} title="Imagem"><Image size={16} /></button>
-      <button type="button" className={styles.toolbarButton} onClick={() => insertText(setter, '$$fórmula$$ ')} title="Fórmula (KaTeX)"><Type size={16} /></button>
-    </div>
-  );
+  const handleKeyDown = (e) => {
+    // Ctrl/Cmd + Enter saves
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      handleSave();
+    }
+  };
+
+  const isEditing = !!cardToEdit;
 
   return (
     <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className={styles.modal}>
+
+        {/* Header */}
         <div className={styles.header}>
-          <h2>{cardToEdit ? 'Editar Card' : 'Novo Card'}</h2>
-          <button className={styles.closeButton} onClick={onClose}><X size={20} /></button>
+          <h2>{isEditing ? 'Editar Card' : 'Adicionar Cards'}</h2>
+          <button className={styles.closeButton} onClick={onClose} aria-label="Fechar">
+            <X size={20} />
+          </button>
         </div>
 
+        {/* Fields */}
         <div className={styles.content}>
-          <div className={styles.editorSection}>
-            <label>Frente (Pergunta)</label>
-            {renderToolbar(setFront)}
+          {/* Success toast */}
+          {showSuccess && (
+            <div className={styles.successToast}>
+              <CheckCircle size={16} />
+              Card criado! Adicione o próximo.
+            </div>
+          )}
+
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>Frente</label>
             <textarea
+              ref={frontRef}
               className={styles.textarea}
+              rows={3}
               value={front}
               onChange={(e) => setFront(e.target.value)}
-              placeholder="Escreva a pergunta aqui..."
+              onKeyDown={handleKeyDown}
+              placeholder="Escreva a pergunta ou conceito..."
             />
-            <div className={styles.preview}>
-              <span className={styles.previewLabel}>Pré-visualização</span>
-              <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
-                {front || '*Pré-visualização...*'}
-              </ReactMarkdown>
-            </div>
           </div>
 
-          <div className={styles.editorSection}>
-            <label>Verso (Resposta)</label>
-            {renderToolbar(setBack)}
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>Verso</label>
             <textarea
               className={styles.textarea}
+              rows={3}
               value={back}
               onChange={(e) => setBack(e.target.value)}
-              placeholder="Escreva a resposta aqui..."
+              onKeyDown={handleKeyDown}
+              placeholder="Escreva a resposta..."
             />
-            <div className={styles.preview}>
-              <span className={styles.previewLabel}>Pré-visualização</span>
-              <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
-                {back || '*Pré-visualização...*'}
-              </ReactMarkdown>
-            </div>
           </div>
         </div>
 
+        {/* Footer */}
         <div className={styles.footer}>
-          <button className={styles.cancelButton} onClick={onClose}>Cancelar</button>
+          <button className={styles.cancelButton} onClick={onClose}>
+            {isEditing ? 'Cancelar' : 'Fechar'}
+          </button>
           <button
             className={styles.saveButton}
             onClick={handleSave}
             disabled={loading || !front.trim() || !back.trim()}
           >
-            {loading ? 'Salvando...' : 'Salvar Card'}
+            {loading
+              ? 'Salvando...'
+              : isEditing
+                ? 'Salvar Edição'
+                : 'Criar Card'}
           </button>
         </div>
+
       </div>
     </div>
   );
