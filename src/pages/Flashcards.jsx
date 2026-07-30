@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import CreateDeckModal from '../components/Flashcards/CreateDeckModal';
+import DeckPreviewModal from '../components/Flashcards/DeckPreviewModal';
 
 export default function Flashcards() {
   const { session } = useAuth();
@@ -14,6 +15,8 @@ export default function Flashcards() {
   const [officialDecks, setOfficialDecks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [previewDeck, setPreviewDeck] = useState(null);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
   const userId = session?.user?.id;
 
@@ -251,8 +254,11 @@ export default function Flashcards() {
               <div
                 key={deck.id}
                 className={styles.deckCard}
-                onClick={() => handleOfficialDeckClick(deck)}
-                title="Clique para adicionar aos seus decks"
+                onClick={() => {
+                  setPreviewDeck(deck);
+                  setIsPreviewModalOpen(true);
+                }}
+                title="Clique para ver os cards deste deck"
               >
                 <div className={styles.deckHeader}>
                   <span className={styles.deckSubject}>{deck.subject}</span>
@@ -264,7 +270,7 @@ export default function Flashcards() {
                     <Layers size={14} /> {deck.cardCount} {deck.cardCount === 1 ? 'card' : 'cards'}
                   </div>
                   <div className={styles.stat} style={{ marginLeft: 'auto', color: 'var(--color-gold)', fontWeight: 600, fontSize: '0.78rem' }}>
-                    Adicionar aos Meus Decks <Plus size={13} style={{ marginLeft: '2px' }} />
+                    Ver Deck <ArrowRight size={13} style={{ marginLeft: '4px' }} />
                   </div>
                 </div>
               </div>
@@ -287,6 +293,13 @@ export default function Flashcards() {
           setIsCreateModalOpen(false);
           setActiveTab('meus_decks');
         }}
+      />
+
+      <DeckPreviewModal
+        isOpen={isPreviewModalOpen}
+        onClose={() => setIsPreviewModalOpen(false)}
+        deck={previewDeck}
+        onAddDeck={handleOfficialDeckClick}
       />
     </div>
   );
