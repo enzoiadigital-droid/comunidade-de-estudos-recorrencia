@@ -184,4 +184,30 @@
   .cardPreview {
     flex: 0 0 70%;
   }
+
+  /* Show elegant scrollbar on desktop */
+  .carousel {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gold) var(--color-bg-secondary);
+    padding-bottom: 1.5rem;
+  }
+
+  .carousel::-webkit-scrollbar {
+    display: block;
+    height: 8px;
+  }
+
+  .carousel::-webkit-scrollbar-track {
+    background: var(--color-bg-secondary);
+    border-radius: 8px;
+  }
+
+  .carousel::-webkit-scrollbar-thumb {
+    background: var(--color-gold);
+    border-radius: 8px;
+  }
+
+  .carousel::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold-hover);
+  }
 }
