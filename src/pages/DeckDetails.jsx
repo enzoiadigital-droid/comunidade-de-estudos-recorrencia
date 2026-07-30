@@ -53,11 +53,11 @@ export default function DeckDetails() {
   };
 
   const handleDeleteCard = async (cardId) => {
-    if (!window.confirm('Tem certeza que deseja excluir este card?')) return;
+    if (!window.confirm('Excluir este card?')) return;
     try {
       const { error } = await supabase.from('flashcards').delete().eq('id', cardId);
       if (error) throw error;
-      setCards(cards.filter(c => c.id !== cardId));
+      setCards(prev => prev.filter(c => c.id !== cardId));
     } catch (error) {
       console.error('Error deleting card:', error);
     }
@@ -77,27 +77,35 @@ export default function DeckDetails() {
 
   return (
     <div className={styles.container}>
+
       <button className={styles.backButton} onClick={() => navigate('/flashcards')}>
-        <ArrowLeft size={20} /> Voltar para Flashcards
+        <ArrowLeft size={16} /> Voltar para Flashcards
       </button>
 
       <header className={styles.header}>
-        <div className={styles.titleSection}>
-          <span className={styles.subjectBadge}>{deck.subject}</span>
-          <h1>{deck.name}</h1>
-          <p style={{ color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>{cards.length} cards totais</p>
+        {/* Title row: subject + title (no buttons here on mobile) */}
+        <div className={styles.titleRow}>
+          <div className={styles.titleSection}>
+            <span className={styles.subjectBadge}>{deck.subject}</span>
+            <h1>{deck.name}</h1>
+            <p className={styles.cardCount}>{cards.length} {cards.length === 1 ? 'card' : 'cards'} totais</p>
+          </div>
         </div>
 
+        {/* Buttons always on their own row — works both on desktop and mobile */}
         <div className={styles.actions}>
-          <button className={styles.addButton} onClick={() => { setEditingCard(null); setIsEditorOpen(true); }}>
-            <Plus size={20} /> Adicionar Card
+          <button
+            className={styles.addButton}
+            onClick={() => { setEditingCard(null); setIsEditorOpen(true); }}
+          >
+            <Plus size={16} /> Adicionar Card
           </button>
           <button
             className={styles.studyButton}
             onClick={() => navigate(`/flashcards/study/${deck.id}`)}
             disabled={cards.length === 0}
           >
-            <Play size={20} /> Estudar Agora
+            <Play size={16} /> Estudar Agora
           </button>
         </div>
       </header>
@@ -124,19 +132,28 @@ export default function DeckDetails() {
                   </div>
                 </div>
               </div>
+
               <div className={styles.cardActions}>
-                <button className={styles.actionButton} onClick={() => { setEditingCard(card); setIsEditorOpen(true); }} title="Editar">
-                  <Edit3 size={18} />
+                <button
+                  className={styles.actionButton}
+                  onClick={() => { setEditingCard(card); setIsEditorOpen(true); }}
+                  title="Editar"
+                >
+                  <Edit3 size={16} />
                 </button>
-                <button className={`${styles.actionButton} ${styles.delete}`} onClick={() => handleDeleteCard(card.id)} title="Excluir">
-                  <Trash2 size={18} />
+                <button
+                  className={`${styles.actionButton} ${styles.delete}`}
+                  onClick={() => handleDeleteCard(card.id)}
+                  title="Excluir"
+                >
+                  <Trash2 size={16} />
                 </button>
               </div>
             </div>
           ))
         ) : (
           <div className={styles.emptyState}>
-            <BookOpen size={48} style={{ marginBottom: '1rem', color: 'var(--color-border)' }} />
+            <BookOpen size={44} style={{ marginBottom: '0.75rem', color: 'var(--color-border)' }} />
             <h3>Deck vazio</h3>
             <p>Adicione seu primeiro card para começar a estudar.</p>
           </div>
