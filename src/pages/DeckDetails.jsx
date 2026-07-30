@@ -167,11 +167,13 @@ export default function DeckDetails() {
         cardToEdit={editingCard}
         onSuccess={(savedCard, type) => {
           if (type === 'create') {
+            // Add card to list but keep modal open for next card
             setCards(prev => [...prev, savedCard]);
           } else {
+            // Edit: update in place and close
             setCards(prev => prev.map(c => c.id === savedCard.id ? savedCard : c));
+            setIsEditorOpen(false);
           }
-          setIsEditorOpen(false);
         }}
       />
     </div>

@@ -3,11 +3,13 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.65);
   display: flex;
-  align-items: flex-end; /* slides up from bottom on mobile */
+  align-items: flex-end;
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease-out;
+  /* safe side padding so modal never touches edges */
+  padding: 0 12px 0;
 }
 
 .modal {
@@ -15,21 +17,25 @@
   border-radius: 20px 20px 0 0;
   width: 100%;
   max-width: 560px;
-  max-height: 92vh;
+  max-height: 88vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
   animation: slideUp 0.3s ease-out;
   overflow: hidden;
+  /* bottom of modal should respect home indicator */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 @media (min-width: 600px) {
   .overlay {
     align-items: center;
+    padding: 0;
   }
   .modal {
     border-radius: 16px;
     max-height: 85vh;
+    padding-bottom: 0;
   }
 }
 
