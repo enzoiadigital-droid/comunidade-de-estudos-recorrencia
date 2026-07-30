@@ -169,6 +169,10 @@ export default function Flashcards() {
     navigate(`/flashcards/study/${target.id}`);
   };
 
+  const totalDueCards = myDecks.reduce((sum, deck) => sum + deck.dueCount, 0);
+  const totalMyDecks = myDecks.length;
+  const isDeckAdded = (officialDeck) => myDecks.some(my => my.name === officialDeck.name);
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -190,11 +194,27 @@ export default function Flashcards() {
             <Zap size={10} /> Revisão Diária
           </span>
           <h2>Revisões de Hoje</h2>
-          <p>Estude com repetição espaçada e consolide o conhecimento de forma eficiente.</p>
+          
+          {!loading && totalMyDecks === 0 ? (
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: '0.4rem' }}>
+              Adicione decks da biblioteca para começar.
+            </p>
+          ) : !loading ? (
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: '0.4rem' }}>
+              <strong style={{ color: 'var(--color-text)' }}>{totalDueCards}</strong> cards pendentes para revisar hoje.
+            </p>
+          ) : null}
         </div>
-        <button className={styles.startButton} onClick={handleStartReviewAll}>
-          Começar Revisão
-        </button>
+
+        {!loading && totalMyDecks > 0 && totalDueCards === 0 ? (
+          <button className={styles.doneButton} disabled>
+            <CheckCircle size={16} /> Tudo revisado!
+          </button>
+        ) : !loading && totalMyDecks > 0 ? (
+          <button className={styles.startButton} onClick={handleStartReviewAll}>
+            Começar Revisão
+          </button>
+        ) : null}
       </section>
 
       {/* Tabs */}
@@ -250,31 +270,42 @@ export default function Flashcards() {
       ) : (
         <div className={styles.grid}>
           {officialDecks.length > 0 ? (
-            officialDecks.map(deck => (
+            officialDecks.map(deck => {
+              const added = isDeckAdded(deck);
+              return (
               <div
                 key={deck.id}
                 className={styles.deckCard}
                 onClick={() => {
-                  setPreviewDeck(deck);
-                  setIsPreviewModalOpen(true);
+                  if (added) {
+                    const myDeck = myDecks.find(my => my.name === deck.name);
+                    if (myDeck) navigate(`/flashcards/deck/${myDeck.id}`);
+                  } else {
+                    setPreviewDeck(deck);
+                    setIsPreviewModalOpen(true);
+                  }
                 }}
-                title="Clique para ver os cards deste deck"
+                title={added ? "Abrir seu deck" : "Clique para ver os cards deste deck"}
               >
                 <div className={styles.deckHeader}>
                   <span className={styles.deckSubject}>{deck.subject}</span>
-                  <span className={styles.officialBadge}>✦ Oficial</span>
+                  {added ? (
+                    <span className={styles.addedBadge}><CheckCircle size={12} /> Na sua coleção</span>
+                  ) : (
+                    <span className={styles.officialBadge}>✦ Oficial</span>
+                  )}
                 </div>
                 <h3 className={styles.deckName}>{deck.name}</h3>
                 <div className={styles.deckStats}>
                   <div className={styles.stat}>
                     <Layers size={14} /> {deck.cardCount} {deck.cardCount === 1 ? 'card' : 'cards'}
                   </div>
-                  <div className={styles.stat} style={{ marginLeft: 'auto', color: 'var(--color-gold)', fontWeight: 600, fontSize: '0.78rem' }}>
-                    Ver Deck <ArrowRight size={13} style={{ marginLeft: '4px' }} />
+                  <div className={styles.stat} style={{ marginLeft: 'auto', color: added ? 'var(--color-text-muted)' : 'var(--color-gold)', fontWeight: 600, fontSize: '0.78rem' }}>
+                    {added ? 'Abrir Deck' : 'Ver Deck'} <ArrowRight size={13} style={{ marginLeft: '4px' }} />
                   </div>
                 </div>
               </div>
-            ))
+            )})
           ) : (
             <div className={styles.emptyState}>
               <BookOpen size={44} style={{ color: 'var(--color-border)', marginBottom: '0.75rem' }} />
