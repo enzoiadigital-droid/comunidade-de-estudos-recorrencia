@@ -226,7 +226,10 @@ export default function StudySession() {
       </header>
 
       <div className={styles.cardArea}>
-        <div className={styles.flashcard}>
+        <div 
+          className={`${styles.flashcard} ${!showAnswer ? styles.clickable : ''}`}
+          onClick={() => !showAnswer && setShowAnswer(true)}
+        >
           <div className={styles.cardContent}>
             <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
               {currentCard.front}
@@ -246,9 +249,15 @@ export default function StudySession() {
         </div>
 
         {!showAnswer ? (
-          <button className={styles.showAnswerBtn} onClick={() => setShowAnswer(true)}>
-            Mostrar Resposta
-          </button>
+          <div className={styles.tapPrompt}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 10V4a2 2 0 0 0-4 0v12"></path>
+              <path d="M10 16a6 6 0 0 0 6 6h1.5a6 6 0 0 0 6-6V9a2 2 0 0 0-2-2h-1v0a2 2 0 0 0-2 2"></path>
+              <path d="M10 10V6a2 2 0 0 0-4 0v8"></path>
+              <path d="M6 14V8a2 2 0 0 0-4 0v9a6 6 0 0 0 6 6"></path>
+            </svg>
+            Toque para ver a resposta
+          </div>
         ) : (
           <div className={styles.ratingButtons}>
             <button className={`${styles.rateBtn} ${styles.rate1}`} onClick={() => handleRate(1)}>

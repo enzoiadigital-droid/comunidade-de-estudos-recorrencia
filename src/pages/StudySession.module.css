@@ -6,14 +6,8 @@
   margin: 0 auto;
   padding: 0.75rem 1rem;
   overflow: hidden;
-
-  /*
-   * dvh = dynamic viewport height — desconta AUTOMATICAMENTE
-   * a barra de endereço do browser no iPhone/Android.
-   * Fallback para navegadores antigos: 100vh - offsets fixos.
-   */
-  height: calc(100vh - 60px - 70px);        /* fallback */
-  height: calc(100dvh - 60px - 70px);       /* moderno  */
+  height: calc(100vh - 60px - 70px);
+  height: calc(100dvh - 60px - 70px);
 }
 
 /* ── Header — compacto, nunca cresce ── */
@@ -99,14 +93,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  min-height: 0; /* ESSENCIAL: sem isso, o filho não encolhe */
+  min-height: 0;
 }
 
 /*
  * Flashcard:
  *   - flex:1 + min-height:0  →  encolhe quando necessário
  *   - overflow-y:auto        →  scroll interno se o texto for longo
- *   - NÃO tem min-height fixo →  nunca empurra o botão pra fora
  */
 .flashcard {
   flex: 1;
@@ -116,7 +109,7 @@
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  padding: 1.25rem 1rem;
+  padding: 1.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,11 +118,20 @@
   color: var(--color-text);
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
   -webkit-overflow-scrolling: touch;
+  transition: border-color 0.2s;
+}
+
+.flashcard.clickable {
+  cursor: pointer;
+}
+
+.flashcard.clickable:hover {
+  border-color: rgba(212, 175, 55, 0.4);
 }
 
 .cardContent {
   width: 100%;
-  font-size: 1rem;
+  font-size: 1.05rem;
   line-height: 1.55;
 }
 
@@ -141,28 +143,30 @@
   width: 70%;
   height: 1px;
   background: var(--color-border);
-  margin: 1rem 0;
+  margin: 1.25rem 0;
   flex-shrink: 0;
   align-self: center;
 }
 
-/* ── Botão Mostrar Resposta — SEMPRE visível, nunca some ── */
-.showAnswerBtn {
-  flex-shrink: 0;   /* nunca encolhe */
-  width: 100%;
-  padding: 0.85rem;
-  background: var(--color-gold);
-  color: #000;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
+/* ── Tap Prompt (Substitui o botão) ── */
+.tapPrompt {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: pulse 2.5s infinite ease-in-out;
+  pointer-events: none; /* Deixa o clique passar para o container se necessário, mas o principal é clicar no card */
 }
 
-.showAnswerBtn:hover {
-  background: var(--color-gold-hover);
+@keyframes pulse {
+  0% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0.5; transform: scale(1); }
 }
 
 /* ── Rating Buttons — SEMPRE visíveis ── */
@@ -252,6 +256,23 @@
   margin-top: 0.15rem;
 }
 
+/* ── Mobile: Experiência Full-screen Imersiva ── */
+@media (max-width: 768px) {
+  .container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100dvh;
+    z-index: 9999; /* Sobrepõe Navbar e BottomNav globais */
+    background: var(--color-bg);
+    max-width: 100%;
+    padding: 1rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
 /* ── Desktop ── */
 @media (min-width: 769px) {
   .container {
@@ -268,8 +289,6 @@
   }
 
   .cardContent { font-size: 1.1rem; }
-
-  .showAnswerBtn { font-size: 1rem; padding: 1rem; }
 
   .rateBtn { font-size: 0.82rem; padding: 0.85rem 0.4rem; }
   .rateBtn span { font-size: 0.68rem; }
