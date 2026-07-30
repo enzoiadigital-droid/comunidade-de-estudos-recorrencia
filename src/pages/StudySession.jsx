@@ -1,17 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { X, BrainCircuit } from 'lucide-react';
-
-const TrophySVG = ({ size = 72, className }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M4.116 8.5C3.42 8.5 2.895 7.859 3.037 7.177L3.633 4.316C3.766 3.676 4.327 3.2 4.981 3.2H19.019C19.673 3.2 20.234 3.676 20.367 4.316L20.963 7.177C21.105 7.859 20.58 8.5 19.884 8.5H18.736C18.174 13.064 15.19 16.666 12 16.666C8.81 16.666 5.826 13.064 5.264 8.5H4.116Z" fill="currentColor" opacity="0.3"/>
-    <path d="M7 3.2V8.5C7.306 13.238 9.387 16.666 12 16.666C14.613 16.666 16.694 13.238 17 8.5V3.2H7Z" fill="currentColor"/>
-    <path d="M10 20.5C10 19.9477 10.4477 19.5 11 19.5H13C13.5523 19.5 14 19.9477 14 20.5V21.5C14 22.0523 13.5523 22.5 13 22.5H11C10.4477 22.5 10 22.0523 10 21.5V20.5Z" fill="currentColor"/>
-    <path d="M12 16.666V19.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-    <path d="M4.5 5.5H3V7.5C3 8.32843 3.67157 9 4.5 9H5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M19.5 5.5H21V7.5C21 8.32843 20.3284 9 19.5 9H18.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-);
+import { X, Trophy, BrainCircuit } from 'lucide-react';
 import styles from './StudySession.module.css';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -183,7 +172,7 @@ export default function StudySession() {
     return (
       <div className={styles.container} style={{ justifyContent: 'center' }}>
         <div className={styles.summaryCard}>
-          <TrophySVG className={styles.summaryIcon} />
+          <Trophy size={64} strokeWidth={1} className={styles.summaryIcon} />
           <h2 className={styles.summaryTitle}>Sessão Finalizada!</h2>
           {cards.length === 0 ? (
             <p style={{ color: 'var(--color-text-muted)' }}>Nenhum card pendente para revisão hoje neste deck.</p>
