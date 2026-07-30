@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Layers, Library, BrainCircuit, BookOpen, Clock, Zap, ArrowRight } from 'lucide-react';
+import { Plus, Layers, Library, BrainCircuit, BookOpen, Clock, Zap, ArrowRight, CheckCircle } from 'lucide-react';
 import styles from './Flashcards.module.css';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -25,23 +25,68 @@ export default function Flashcards() {
     try {
       setLoading(true);
 
+      // 1. Fetch user decks
+      let myDecksData = [];
       if (userId) {
-        const { data: myData, error: myError } = await supabase
+        const { data: myData } = await supabase
           .from('flashcard_decks')
           .select('*')
           .eq('user_id', userId)
           .order('created_at', { ascending: false });
-        if (!myError) setMyDecks(myData || []);
+        if (myData) myDecksData = myData;
       }
 
-      const { data: offData, error: offError } = await supabase
+      // 2. Fetch official decks
+      const { data: offData } = await supabase
         .from('flashcard_decks')
         .select('*')
         .eq('is_official', true)
         .eq('is_published', true)
         .order('display_order', { ascending: true });
+      let officialDecksData = offData || [];
 
-      if (!offError) setOfficialDecks(offData || []);
+      // 3. Fetch all flashcards to count them (optimised by selecting only needed columns)
+      const { data: allCards } = await supabase
+        .from('flashcards')
+        .select('id, deck_id');
+
+      // 4. Fetch reviews to calculate pendentes
+      let allReviews = [];
+      if (userId) {
+        const { data: reviews } = await supabase
+          .from('flashcard_reviews')
+          .select('card_id, deck_id, next_review_date')
+          .eq('user_id', userId);
+        if (reviews) allReviews = reviews;
+      }
+
+      const now = new Date();
+
+      // Enrich function to add cardCount and dueCount
+      const enrichDecks = (decks, isOfficial) => {
+        return decks.map(deck => {
+          const deckCards = allCards?.filter(c => c.deck_id === deck.id) || [];
+          
+          let dueCount = 0;
+          if (!isOfficial) {
+            const deckReviews = allReviews?.filter(r => r.deck_id === deck.id) || [];
+            deckCards.forEach(card => {
+              const review = deckReviews.find(r => r.card_id === card.id);
+              if (!review) dueCount++; // Never reviewed, due now
+              else if (new Date(review.next_review_date) <= now) dueCount++; // Past due date
+            });
+          }
+
+          return {
+            ...deck,
+            cardCount: deckCards.length,
+            dueCount: isOfficial ? deckCards.length : dueCount
+          };
+        });
+      };
+
+      setMyDecks(enrichDecks(myDecksData, false));
+      setOfficialDecks(enrichDecks(officialDecksData, true));
     } catch (error) {
       console.error('Error fetching decks:', error);
     } finally {
@@ -51,8 +96,8 @@ export default function Flashcards() {
 
   const handleOfficialDeckClick = async (deck) => {
     if (!userId) return;
-    // Clone to user's decks and navigate to it
     try {
+      setLoading(true);
       // Check if already cloned
       const { data: existing } = await supabase
         .from('flashcard_decks')
@@ -62,7 +107,8 @@ export default function Flashcards() {
         .maybeSingle();
 
       if (existing) {
-        navigate(`/flashcards/deck/${existing.id}`);
+        alert('Este deck já está na sua coleção!');
+        setActiveTab('meus_decks');
         return;
       }
 
@@ -88,17 +134,36 @@ export default function Flashcards() {
         .select('front, back')
         .eq('deck_id', deck.id);
 
+      let addedCount = 0;
       if (originalCards && originalCards.length > 0) {
         await supabase.from('flashcards').insert(
           originalCards.map(c => ({ deck_id: newDeck.id, front: c.front, back: c.back }))
         );
+        addedCount = originalCards.length;
       }
 
-      setMyDecks(prev => [newDeck, ...prev]);
-      navigate(`/flashcards/deck/${newDeck.id}`);
+      // Add to myDecks state and switch tab
+      const enrichedNewDeck = { ...newDeck, cardCount: addedCount, dueCount: addedCount };
+      setMyDecks(prev => [enrichedNewDeck, ...prev]);
+      setActiveTab('meus_decks');
+
     } catch (err) {
       console.error('Failed to clone deck:', err);
+      alert('Erro ao adicionar deck: ' + err.message);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleStartReviewAll = () => {
+    // Find the deck with the most due cards
+    const dueDecks = myDecks.filter(d => d.dueCount > 0);
+    if (dueDecks.length === 0) {
+      alert('Parabéns! Nenhuma revisão pendente para hoje.');
+      return;
+    }
+    const target = dueDecks.sort((a, b) => b.dueCount - a.dueCount)[0];
+    navigate(`/flashcards/study/${target.id}`);
   };
 
   return (
@@ -115,7 +180,7 @@ export default function Flashcards() {
         </button>
       </header>
 
-      {/* Highlight Card — elegant glassmorphism */}
+      {/* Highlight Card */}
       <section className={styles.highlightCard}>
         <div className={styles.highlightInfo}>
           <span className={styles.highlightBadge}>
@@ -124,7 +189,7 @@ export default function Flashcards() {
           <h2>Revisões de Hoje</h2>
           <p>Estude com repetição espaçada e consolide o conhecimento de forma eficiente.</p>
         </div>
-        <button className={styles.startButton}>
+        <button className={styles.startButton} onClick={handleStartReviewAll}>
           Começar Revisão
         </button>
       </section>
@@ -150,7 +215,7 @@ export default function Flashcards() {
       {/* Content */}
       {loading ? (
         <div className={styles.emptyState}>
-          <p>Carregando decks...</p>
+          <p style={{ color: 'var(--color-text-muted)' }}>Sincronizando decks e calculando revisões...</p>
         </div>
       ) : activeTab === 'meus_decks' ? (
         <div className={styles.grid}>
@@ -163,10 +228,10 @@ export default function Flashcards() {
                 <h3 className={styles.deckName}>{deck.name}</h3>
                 <div className={styles.deckStats}>
                   <div className={styles.stat}>
-                    <Layers size={14} /> 0 cards
+                    <Layers size={14} /> {deck.cardCount} {deck.cardCount === 1 ? 'card' : 'cards'}
                   </div>
-                  <div className={styles.stat}>
-                    <Clock size={14} /> 0 pendentes
+                  <div className={styles.stat} style={{ color: deck.dueCount > 0 ? 'var(--color-gold)' : 'inherit' }}>
+                    <Clock size={14} /> {deck.dueCount} pendentes
                   </div>
                 </div>
               </div>
@@ -187,7 +252,7 @@ export default function Flashcards() {
                 key={deck.id}
                 className={styles.deckCard}
                 onClick={() => handleOfficialDeckClick(deck)}
-                title="Clique para adicionar aos seus decks e estudar"
+                title="Clique para adicionar aos seus decks"
               >
                 <div className={styles.deckHeader}>
                   <span className={styles.deckSubject}>{deck.subject}</span>
@@ -196,10 +261,10 @@ export default function Flashcards() {
                 <h3 className={styles.deckName}>{deck.name}</h3>
                 <div className={styles.deckStats}>
                   <div className={styles.stat}>
-                    <Layers size={14} /> 0 cards
+                    <Layers size={14} /> {deck.cardCount} {deck.cardCount === 1 ? 'card' : 'cards'}
                   </div>
                   <div className={styles.stat} style={{ marginLeft: 'auto', color: 'var(--color-gold)', fontWeight: 600, fontSize: '0.78rem' }}>
-                    Adicionar <ArrowRight size={13} />
+                    Adicionar aos Meus Decks <Plus size={13} style={{ marginLeft: '2px' }} />
                   </div>
                 </div>
               </div>
@@ -218,8 +283,9 @@ export default function Flashcards() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={(newDeck) => {
-          setMyDecks(prev => [newDeck, ...prev]);
+          setMyDecks(prev => [{ ...newDeck, cardCount: 0, dueCount: 0 }, ...prev]);
           setIsCreateModalOpen(false);
+          setActiveTab('meus_decks');
         }}
       />
     </div>
