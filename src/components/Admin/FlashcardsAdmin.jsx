@@ -78,6 +78,9 @@ export default function FlashcardsAdmin({ showMsg }) {
       skipEmptyLines: true,
       complete: async (results) => {
         try {
+          const { data: { user } } = await supabase.auth.getUser();
+          const currentUserId = user?.id;
+
           const rows = results.data;
           let newDecksCount = 0;
           let newCardsCount = 0;
@@ -129,7 +132,7 @@ export default function FlashcardsAdmin({ showMsg }) {
                   subject: group.subject,
                   is_official: true,
                   is_published: true,
-                  user_id: null
+                  user_id: currentUserId
                 }])
                 .select();
                 
