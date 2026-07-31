@@ -18,7 +18,7 @@ export default function FlashcardsAdmin({ showMsg }) {
       .from('flashcard_decks')
       .select('*')
       .eq('is_official', true)
-      .order('display_order');
+      .order('created_at', { ascending: false });
     if (data) setDecks(data);
   };
 
