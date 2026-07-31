@@ -41,9 +41,14 @@ export default function FlashcardsAdmin({ showMsg }) {
   };
 
   const handleDeleteDeck = async (id) => {
-    if (!window.confirm('Excluir este deck oficial?')) return;
+    if (!window.confirm('Excluir este deck oficial e todos os seus cards?')) return;
+    
+    const { error: cardsError } = await supabase.from('flashcards').delete().eq('deck_id', id);
+    if (cardsError) { showMsg('Erro ao excluir cards: ' + cardsError.message, 'error'); return; }
+
     const { error } = await supabase.from('flashcard_decks').delete().eq('id', id);
     if (error) { showMsg(error.message, 'error'); return; }
+    
     showMsg('Deck excluído!');
     fetchDecks();
   };
@@ -156,7 +161,13 @@ export default function FlashcardsAdmin({ showMsg }) {
             newCardsCount += cardsToInsert.length;
           }
           
-          showMsg(`Importação em massa concluída! ${newDecksCount} decks novos e ${newCardsCount} cards inseridos.`);
+          let msg = `Importação em massa concluída! ${newCardsCount} cards adicionados com sucesso.`;
+          if (newDecksCount > 0) {
+            msg += ` ${newDecksCount} novos decks criados.`;
+          } else {
+            msg += ` (Os cards foram inseridos nos decks já existentes).`;
+          }
+          showMsg(msg);
           fetchDecks();
         } catch (err) {
           showMsg(`Erro na importação: ${err.message}`, 'error');
