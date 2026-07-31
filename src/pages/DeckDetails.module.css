@@ -320,10 +320,10 @@
     font-size: 1.35rem;
   }
 
-  /* On mobile: stack title and buttons vertically */
+  /* On mobile: keep text and gear on same row */
   .titleRow {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: flex-start;
     gap: 0.75rem;
   }
 
