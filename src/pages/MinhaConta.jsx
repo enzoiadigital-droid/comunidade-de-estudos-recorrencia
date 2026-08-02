@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, Headset, CheckCircle, User as UserIcon, Mail } from 'lucide-react';
 import styles from './MinhaConta.module.css';
 
 export default function MinhaConta() {
+  const navigate = useNavigate();
   const { session, isSubscriber } = useAuth();
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,7 @@ export default function MinhaConta() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    navigate('/');
   };
 
   const handleSupport = () => {
