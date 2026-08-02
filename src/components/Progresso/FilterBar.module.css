@@ -66,6 +66,10 @@
   border-color: var(--color-gold);
 }
 
+.dateInput::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 .dateSep {
   font-size: 0.8rem;
   color: var(--color-text-muted);
