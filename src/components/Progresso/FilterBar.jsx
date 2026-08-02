@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import styles from './FilterBar.module.css';
 
 const PERIODS = [
@@ -26,7 +26,6 @@ export default function FilterBar({ period, setPeriod, customStart, setCustomSta
 
       {period === 'custom' && (
         <div className={styles.customRange}>
-          <Calendar size={14} />
           <input
             type="date"
             value={customStart}
