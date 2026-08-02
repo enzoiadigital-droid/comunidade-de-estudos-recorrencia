@@ -1,0 +1,22 @@
+.wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: crosshair;
+  min-width: 300px;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}

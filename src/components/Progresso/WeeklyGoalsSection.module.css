@@ -1,0 +1,36 @@
+.list { display: flex; flex-direction: column; gap: 0.85rem; }
+
+.row { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+
+.week { font-size: 0.85rem; color: var(--color-text); font-weight: 600; }
+
+.right { display: flex; align-items: center; gap: 0.6rem; }
+
+.time { font-size: 0.78rem; color: var(--color-text-muted); }
+
+.badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+}
+
+.badge.done {
+  background: rgba(16,185,129,0.15);
+  color: var(--color-success);
+  border: 1px solid rgba(16,185,129,0.3);
+}
+
+.badge.miss {
+  background: rgba(212,175,55,0.1);
+  color: var(--color-gold);
+  border: 1px solid rgba(212,175,55,0.25);
+}
+
+.track { height: 7px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+.fill { height: 100%; border-radius: 99px; transition: width 0.8s ease; }
+
+.empty { display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+.empty p { font-size: 0.88rem; color: var(--color-text-muted); text-align: center; }

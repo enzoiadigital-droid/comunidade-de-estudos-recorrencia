@@ -1,0 +1,122 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.25rem 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 14px 14px 0 0;
+}
+
+.card.gold::before  { background: var(--color-gold); }
+.card.blue::before  { background: #3B82F6; }
+.card.orange::before{ background: #F97316; }
+.card.green::before { background: var(--color-success); }
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.icon {
+  font-size: 1rem;
+}
+
+.label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+
+.sub {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 0.1rem;
+}
+
+.barTrack {
+  height: 5px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 0.3rem;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.8s ease;
+}
+
+.deltaUp {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--color-success);
+  margin-top: 0.2rem;
+}
+
+.deltaDown {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--color-error);
+  margin-top: 0.2rem;
+}
+
+.deltaFlat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .value { font-size: 1.4rem; }
+}

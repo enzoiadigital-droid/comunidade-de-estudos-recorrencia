@@ -1,0 +1,117 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+}
+
+.periodGroup {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.periodBtn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: all 0.2s;
+}
+
+.periodBtn:hover {
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--color-gold);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.periodBtn.active {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--color-gold);
+  border-color: var(--color-gold);
+  font-weight: 700;
+}
+
+.customRange {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+.dateInput {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  font-family: var(--font-family);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.dateSep {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.subjectWrapper {
+  position: relative;
+  margin-left: auto;
+}
+
+.subjectSelect {
+  appearance: none;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 0.4rem 2rem 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-family: var(--font-family);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.subjectSelect:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.chevron {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .bar {
+    padding: 0.85rem 1rem;
+    gap: 0.6rem;
+  }
+  .subjectWrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+  .subjectSelect {
+    width: 100%;
+  }
+}

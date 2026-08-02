@@ -14,6 +14,7 @@ import DeckDetails from './pages/DeckDetails';
 import StudySession from './pages/StudySession';
 import ComingSoon from './pages/ComingSoon';
 import MinhaConta from './pages/MinhaConta';
+import MeuProgresso from './pages/MeuProgresso';
 
 function App() {
   const { session, isAdmin, loading } = useAuth();
@@ -61,7 +62,7 @@ function App() {
           <Route path="/flashcards" element={<Flashcards />} />
           <Route path="/flashcards/deck/:id" element={<DeckDetails />} />
           <Route path="/flashcards/study/:id" element={<StudySession />} />
-          <Route path="/progresso" element={<ComingSoon title="Meu Progresso" />} />
+          <Route path="/progresso" element={<MeuProgresso />} />
           <Route path="/conta" element={<MinhaConta />} />
         </Route>
       </Routes>
