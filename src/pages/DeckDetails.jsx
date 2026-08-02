@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Play, Edit3, Trash2, Settings, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Plus, Play, Edit3, Trash2, Settings, RotateCcw, BookOpen } from 'lucide-react';
 import styles from './DeckDetails.module.css';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
