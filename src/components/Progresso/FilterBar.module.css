@@ -23,7 +23,7 @@
   background: transparent;
   color: var(--color-text-muted);
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   font-family: var(--font-family);
   transition: all 0.2s;
@@ -39,7 +39,6 @@
   background: rgba(212, 175, 55, 0.15);
   color: var(--color-gold);
   border-color: var(--color-gold);
-  font-weight: 700;
 }
 
 .customRange {
