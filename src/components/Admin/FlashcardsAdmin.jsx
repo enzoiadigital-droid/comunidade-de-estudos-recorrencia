@@ -137,7 +137,7 @@ export default function FlashcardsAdmin({ showMsg }) {
                   subject: group.subject,
                   is_official: true,
                   is_published: true,
-                  user_id: currentUserId
+                  user_id: null
                 }])
                 .select();
                 
