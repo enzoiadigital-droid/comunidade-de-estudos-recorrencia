@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Layers, Library, BrainCircuit, BookOpen, Clock, Zap, ArrowRight, CheckCircle } from 'lucide-react';
+import { Plus, Layers, Library, BrainCircuit, BookOpen, Clock, Zap, ArrowRight, CheckCircle, Search, Filter } from 'lucide-react';
 import styles from './Flashcards.module.css';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +17,9 @@ export default function Flashcards() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [previewDeck, setPreviewDeck] = useState(null);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+
+  const [libraryFilterSubject, setLibraryFilterSubject] = useState('');
+  const [libraryFilterSearch, setLibraryFilterSearch] = useState('');
 
   const userId = session?.user?.id;
 
@@ -174,6 +177,14 @@ export default function Flashcards() {
   const totalMyDecks = myDecks.length;
   const isDeckAdded = (officialDeck) => myDecks.some(my => my.name === officialDeck.name);
 
+  const availableLibrarySubjects = [...new Set(officialDecks.map(deck => deck.subject))].filter(Boolean).sort();
+  
+  const filteredOfficialDecks = officialDecks.filter(deck => {
+    const matchSubject = !libraryFilterSubject || deck.subject === libraryFilterSubject;
+    const matchSearch = !libraryFilterSearch || deck.name.toLowerCase().includes(libraryFilterSearch.toLowerCase());
+    return matchSubject && matchSearch;
+  });
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -269,9 +280,36 @@ export default function Flashcards() {
           )}
         </div>
       ) : (
-        <div className={styles.grid}>
-          {officialDecks.length > 0 ? (
-            officialDecks.map(deck => {
+        <div className={styles.libraryContainer}>
+          <div className={styles.libraryFilterBar}>
+            <div className={styles.searchGroup}>
+              <Search size={16} className={styles.searchIcon} />
+              <input
+                type="text"
+                placeholder="Buscar assunto..."
+                className={styles.searchInput}
+                value={libraryFilterSearch}
+                onChange={(e) => setLibraryFilterSearch(e.target.value)}
+              />
+            </div>
+            <div className={styles.filterGroup}>
+              <Filter size={16} className={styles.filterIcon} />
+              <select
+                className={styles.subjectSelect}
+                value={libraryFilterSubject}
+                onChange={(e) => setLibraryFilterSubject(e.target.value)}
+              >
+                <option value="">Todas as Matérias</option>
+                {availableLibrarySubjects.map(sub => (
+                  <option key={sub} value={sub}>{sub}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className={styles.grid}>
+            {filteredOfficialDecks.length > 0 ? (
+              filteredOfficialDecks.map(deck => {
               const added = isDeckAdded(deck);
               return (
               <div
@@ -311,9 +349,10 @@ export default function Flashcards() {
             <div className={styles.emptyState}>
               <BookOpen size={44} style={{ color: 'var(--color-border)', marginBottom: '0.75rem' }} />
               <h3>Biblioteca Vazia</h3>
-              <p>Nenhum deck oficial disponível no momento.</p>
+              <p>Nenhum deck encontrado com os filtros atuais.</p>
             </div>
           )}
+          </div>
         </div>
       )}
 
