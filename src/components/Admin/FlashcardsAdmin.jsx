@@ -26,12 +26,13 @@ export default function FlashcardsAdmin({ showMsg }) {
     e.preventDefault();
     if (!newDeck.name || !newDeck.subject) return;
     setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
     const { error } = await supabase.from('flashcard_decks').insert([{
       name: newDeck.name,
       subject: newDeck.subject,
       is_official: true,
       is_published: true,
-      user_id: null
+      user_id: user?.id
     }]);
     setLoading(false);
     if (error) { showMsg(error.message, 'error'); return; }
@@ -137,7 +138,7 @@ export default function FlashcardsAdmin({ showMsg }) {
                   subject: group.subject,
                   is_official: true,
                   is_published: true,
-                  user_id: null
+                  user_id: currentUserId
                 }])
                 .select();
                 

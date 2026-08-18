@@ -98,7 +98,8 @@ export default function MeuProgresso() {
         supabase
           .from('flashcard_decks')
           .select('id, name, subject, is_official')
-          .eq('user_id', userId),
+          .eq('user_id', userId)
+          .eq('is_official', false),
         supabase
           .from('study_goals')
           .select('weekly_goal_hours')

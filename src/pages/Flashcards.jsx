@@ -35,6 +35,7 @@ export default function Flashcards() {
           .from('flashcard_decks')
           .select('*')
           .eq('user_id', userId)
+          .eq('is_official', false)
           .order('created_at', { ascending: false });
         if (myData) myDecksData = myData;
       }
